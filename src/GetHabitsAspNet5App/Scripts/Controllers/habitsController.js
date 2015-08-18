@@ -5,12 +5,14 @@
         .module('getHabitsApp')
         .controller('habitsController', habitsController);
 
-    habitsController.$inject = ['$scope']; 
+    habitsController.$inject = ['$scope', 'habitsService'];
 
-    function habitsController($scope) {
+    function habitsController($scope, habitsService) {
         $scope.title = 'habitsController';
 
         activate();
+
+        $scope.habits = habitsService.getData();
 
         function activate() { }
     }
