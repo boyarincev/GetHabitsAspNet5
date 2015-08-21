@@ -12,8 +12,10 @@
 
         activate();
 
-        $scope.habits = habitsService.getData();
+        $scope.habits = habitsService.getData.query();
+        $scope.Name = "Приложуха";
 
-        function activate() { }
+        function activate() {
+        }
     }
 })();

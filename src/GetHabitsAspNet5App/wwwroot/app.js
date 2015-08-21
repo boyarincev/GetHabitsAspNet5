@@ -1,1 +1,38 @@
-!function(){"use strict";angular.module("getHabitsApp",["ngResource","habitsService"])}(),function(){"use strict";function a(a,b){function c(){}a.title="habitsController",c(),a.habits=b.getData()}angular.module("getHabitsApp").controller("habitsController",a),a.$inject=["$scope","habitsService"]}(),function(){"use strict";function a(a){function b(){return a("api/habits",{},{query:{method:"GET",params:{},isArray:!0}})}var c={getData:b};return c}angular.module("getHabitsApp").factory("habitsService",a),a.$inject=["$resource"]}();
+(function() {
+    "use strict";
+    angular.module("getHabitsApp", [ "ngResource" ]);
+})();
+
+(function() {
+    "use strict";
+    angular.module("getHabitsApp").controller("habitsController", habitsController);
+    habitsController.$inject = [ "$scope", "habitsService" ];
+    function habitsController($scope, habitsService) {
+        $scope.title = "habitsController";
+        activate();
+        $scope.habits = habitsService.getData.query();
+        $scope.Name = "Приложуха";
+        function activate() {}
+    }
+})();
+
+(function() {
+    "use strict";
+    angular.module("getHabitsApp").factory("habitsService", habitsService);
+    habitsService.$inject = [ "$resource" ];
+    function habitsService($resource) {
+        var service = {
+            getData: getData()
+        };
+        return service;
+        function getData() {
+            return $resource("api/habits", {}, {
+                query: {
+                    method: "GET",
+                    params: {},
+                    isArray: true
+                }
+            });
+        }
+    }
+})();

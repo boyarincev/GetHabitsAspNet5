@@ -9,7 +9,7 @@
 
     function habitsService($resource) {
         var service = {
-            getData: getData
+            getData: getData()
         };
 
         return service;

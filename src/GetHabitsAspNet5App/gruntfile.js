@@ -12,6 +12,11 @@ module.exports = function (grunt) {
     grunt.initConfig({
         uglify: {
             scripts: {
+                options: { 
+                    compress: false,
+                    beautify: true,
+                    mangle: false
+                },
                 files: { 'wwwroot/app.js': ['Scripts/app.js', 'Scripts/**/*.js'] }
             }
         },

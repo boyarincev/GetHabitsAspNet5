@@ -6,7 +6,7 @@
         'ngResource',
 
         // Custom modules 
-        'habitsService'
+
 
         // 3rd Party Modules
         
