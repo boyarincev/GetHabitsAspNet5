@@ -1,6 +1,17 @@
 (function() {
     "use strict";
-    angular.module("getHabitsApp", [ "ngResource" ]);
+    angular.module("getHabitsApp", [ "ngResource", "ngRoute" ]).config(config);
+    config.$inject("$routeProvider", "$locationProvider");
+    function config($routeProvider, $locationProvider) {
+        $routeProvider.when("/", {
+            templateUrl: "/Views/list.html",
+            controller: "habitsController"
+        }).when("/add", {
+            templateUrl: "/Views/add.html",
+            controller: "habitsController"
+        });
+        $locationProvider.html5Mode(true);
+    }
 })();
 
 (function() {
