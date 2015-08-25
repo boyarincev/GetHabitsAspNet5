@@ -7,7 +7,7 @@ using GetHabitsAspNet5App.Models.DomainModels;
 
 // For more information on enabling Web API for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace GetHabitsAspNet5App.API
+namespace GetHabitsAspNet5App.Api
 {
     [Route("api/[controller]")]
     public class HabitsController : Controller

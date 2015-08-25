@@ -20,7 +20,8 @@ namespace GetHabitsAspNet5App
         {
             app.UseMvc(routeBuilder =>
             {
-                routeBuilder.MapRoute("clientSideRouting", "/{controller=Home}/{id=Index}");
+                routeBuilder.MapRoute("appRoute", "app/{*all}", new { controller = "Home", action = "Index"});
+                routeBuilder.MapRoute("clientSideRouting", "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

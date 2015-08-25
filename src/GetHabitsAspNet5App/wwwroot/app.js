@@ -1,12 +1,12 @@
 (function() {
     "use strict";
     angular.module("getHabitsApp", [ "ngResource", "ngRoute" ]).config(config);
-    config.$inject("$routeProvider", "$locationProvider");
+    config.$inject = [ "$routeProvider", "$locationProvider" ];
     function config($routeProvider, $locationProvider) {
-        $routeProvider.when("/", {
+        $routeProvider.when("/app", {
             templateUrl: "/Views/list.html",
             controller: "habitsController"
-        }).when("/add", {
+        }).when("/app/add", {
             templateUrl: "/Views/add.html",
             controller: "habitsController"
         });
