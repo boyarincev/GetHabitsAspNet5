@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-    angular.module("getHabitsApp", [ "ngResource", "ngRoute" ]).config(config);
+    angular.module("getHabitsApp", [ "ngRoute", "getHabitsApp.habitsService" ]).config(config);
     config.$inject = [ "$routeProvider", "$locationProvider" ];
     function config($routeProvider, $locationProvider) {
         $routeProvider.when("/app", {
@@ -21,7 +21,7 @@
     function habitsController($scope, habitsService) {
         $scope.title = "habitsController";
         activate();
-        $scope.habits = habitsService.getData.query();
+        $scope.habits = habitsService.query();
         $scope.Name = "Приложуха";
         function activate() {}
     }
@@ -29,21 +29,11 @@
 
 (function() {
     "use strict";
-    angular.module("getHabitsApp").factory("habitsService", habitsService);
+    angular.module("getHabitsApp.habitsService", [ "ngResource" ]).factory("habitsService", habitsService);
     habitsService.$inject = [ "$resource" ];
     function habitsService($resource) {
-        var service = {
-            getData: getData()
-        };
-        return service;
-        function getData() {
-            return $resource("api/habits", {}, {
-                query: {
-                    method: "GET",
-                    params: {},
-                    isArray: true
-                }
-            });
-        }
+        return $resource("api/habits/:habitId", {
+            habitId: "@id"
+        }, {});
     }
 })();

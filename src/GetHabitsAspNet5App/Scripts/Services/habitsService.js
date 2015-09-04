@@ -2,22 +2,15 @@
     'use strict';
 
     angular
-        .module('getHabitsApp')
+        .module('getHabitsApp.habitsService', ['ngResource'])
         .factory('habitsService', habitsService);
 
     habitsService.$inject = ['$resource'];
 
+    
     function habitsService($resource) {
-        var service = {
-            getData: getData()
-        };
-
-        return service;
-
-        function getData() {
-            return $resource('api/habits', {}, {
-                query: { method: 'GET', params: {}, isArray: true}
-            });
-        }
+        return $resource('api/habits/:habitId', {habitId: '@id'}, {
+            //query: { method: 'GET', params: {}, isArray: true}
+        });
     }
 })();

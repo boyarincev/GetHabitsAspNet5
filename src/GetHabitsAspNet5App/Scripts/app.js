@@ -3,10 +3,9 @@
 
     angular.module('getHabitsApp', [
         // Angular modules
-        'ngResource',
-        'ngRoute'
+        'ngRoute',
         // Custom modules
-
+        'getHabitsApp.habitsService'
 
         // 3rd Party Modules
 
