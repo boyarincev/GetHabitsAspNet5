@@ -10,17 +10,23 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'sinon'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      'Scripts/**/tests/*.js'
+      'wwwroot/lib/angular/angular.js',
+      'wwwroot/lib/angular-resource/angular-resource.js',
+      'wwwroot/lib/angular-route/angular-route.js',
+      'wwwroot/lib/angular-mocks/angular-mocks.js',
+      'wwwroot/app.js',
+      'Scripts/**/*Tests.js'
     ],
 
 
     // list of files to exclude
     exclude: [
+        'Scripts/**/*E2ETests.js'
     ],
 
 
@@ -60,7 +66,8 @@ module.exports = function(config) {
     plugins: [
         'karma-chrome-launcher',
         'karma-jasmine',
-        'karma-junit-reporter'
+        'karma-junit-reporter',
+        'karma-sinon'
     ],
 
     // Continuous Integration mode

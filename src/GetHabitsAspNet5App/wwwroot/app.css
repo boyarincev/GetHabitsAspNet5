@@ -1,0 +1,30 @@
+﻿body {
+}
+.control-buttons{
+    float: right;
+}
+
+.checkin-head{
+    width: 5%;
+    text-align:center;
+}
+
+.checkin-link{
+
+}
+
+.checkin{
+    text-align:center;
+}
+
+.checkin-missed{
+    color: gray;
+}
+
+.checkin-done{
+    color: green;
+}
+
+.checkin-not-done{
+    color: red;
+}

@@ -5,25 +5,32 @@
         // Angular modules
         'ngRoute',
         // Custom modules
-        'getHabitsApp.habitsService'
+        'getHabitsApp.habitsService',
+        'getHabitsApp.HabitsControllers'
 
         // 3rd Party Modules
 
-    ]).config(config);
+    ]).config(config).constant('AppName', 'getHabitsApp');
 
     config.$inject = ['$routeProvider', '$locationProvider'];
 
+    /**
+     * @description Determine
+     * @param {string} $routeProvider The $routeProvider for given function
+     * @param {number} $locationProvider $locationProvider determine which location should be used
+     */
     function config($routeProvider, $locationProvider) {
         $routeProvider
             .when('/app', {
                 templateUrl: '/Views/list.html',
-                controller: 'habitsController'
+                controller: 'HabitsListController'
             })
             .when('/app/add', {
                 templateUrl: '/Views/add.html',
-                controller: 'habitsController'
+                controller: 'HabitAddController'
             });
 
         $locationProvider.html5Mode(true);
     }
+
 })();

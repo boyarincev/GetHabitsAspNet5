@@ -9,8 +9,13 @@ namespace GetHabitsAspNet5App.Models.DomainModels
     public class Checkin
     {
         public Int64 Id { get; set; }
-        public bool Done { get; set; }
+        public CheckinState State { get; set; }
         [Required]
         public DateTime Date { get; set; }
+    }
+
+    public enum CheckinState
+    {
+        NotSet, Done, NotDone
     }
 }

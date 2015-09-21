@@ -11,6 +11,19 @@
     "karma-chrome-launcher": "~0.2.0",
     "grunt-karma": "~0.12.0",
     "karma-cli": "~0.1.0",
-    "karma-junit-reporter": "~0.3.4"
+    "karma-junit-reporter": "~0.3.4",
+    "karma-sinon": "~1.0.4",
+    "protractor": "~2.2.0",
+    "grunt-exec": "~0.4.6",
+    "grunt-contrib-jshint": "~0.11.3",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-bower-task": "~0.4.0",
+    "grunt-protractor-webdriver": "~0.2.0"
+  },
+  "scripts": {
+    "update-webdriver": "webdriver-manager update",
+    "start-protractor": "webdriver-manager start",
+    "preprotractor": "npm run update-webdriver",
+    "protractor": "protractor protractor.conf.js"
   }
 }

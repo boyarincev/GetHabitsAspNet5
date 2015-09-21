@@ -1,25 +1,44 @@
 ﻿<div>
-
-    <h1>Список привычек</h1>
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped table-hover" id="habits">
         <thead>
-            <tr>
-                <th></th>
-                <th>Привычка</th>
+            <tr class="">
+                <th class="">Список привычек</th>
+                <th class="checkin-head" ng-repeat="th in arrayHead track by $index">{{getDayForHead($index)}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="habit in habits">
-                <td>
-                    <a href="/habits/edit/{{habit.Id}}" class="btn btn-default btn-xs">edit</a>
-                    <a href="/habits/delete/{{habit.Id}}" class="btn btn-danger btn-xs">delete</a>
+            <tr ng-repeat="habit in habits" ng-mouseenter="rowActive = true" ng-mouseleave="rowActive = false" class="">
+                <td class="">
+                    <span ng-hide="habit.editable">
+                        <span class="habit-name">{{habit.Name}}</span>
+                        <span class="control-buttons btn-group" role="group" aria-label="habit manage" ng-init="rowActive = false" ng-show="rowActive">
+                            <button ng-click="editHabit(habit)" ng-disabled="habit.saving" class="btn btn-default btn-xs edit-button">edit</button>
+                            <button ng-click="delHabit(habit, $index)" ng-disabled="habit.saving" class="btn btn-danger btn-xs delete-button">delete</button>
+                        </span>
+                    </span>
+                    <form novalidate ng-show="habit.editable" ng-submit="submitHabit(habit)" class="form-inline input-group">
+                        <input type="text" value="" class="form-control" ng-model="habit.newName" required />
+                        <span class="input-group-btn">
+                            <button ng-click="submitHabit(habit)" type="button" class="btn btn-default send-habit" aria-label="Save text">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </button>
+                            <button ng-click="cancelEdit(habit, $index)" type="button" class="btn btn-default cancel-edit" aria-label="Close textbox">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </span>
+                    </form>
                 </td>
-                <td>{{habit.Name}}</td>
+                <td class="checkin" ng-repeat="checkin in habit.Checkins" ng-init="setUpViewState(checkin)">
+                    <a href="#" class="checkin-link" ng-click="setFollowState(checkin)">
+                        <span class="glyphicon {{checkin.viewState}}"></span>
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>
-
-    <p>
-        <a href="/habits/add" class="btn btn-primary">Добавить новую привычку</a>
-    </p>
+    <form novalidate>
+        <div class="form-group">
+            <button ng-click="addNewHabit()" class="btn btn-primary" id="add-new-habit-button" ng-disabled="creatingHabit">Добавить новую привычку</button>
+        </div>
+    </form>
 </div>

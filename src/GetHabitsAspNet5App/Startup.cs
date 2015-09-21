@@ -18,6 +18,8 @@ namespace GetHabitsAspNet5App
 
         public void Configure(IApplicationBuilder app)
         {
+            app.UseStaticFiles();
+
             app.UseMvc(routeBuilder =>
             {
                 routeBuilder.MapRoute("appRoute", "app/{*all}", new { controller = "Home", action = "Index"});
