@@ -50,8 +50,11 @@ module.exports = function (grunt) {
             protractorStart: {
                 cmd: 'protractor protractor.conf.js'
             },
-            webdriverpdate: {
+            webdriverUpdate: {
                 cmd: 'webdriver-manager update'
+            },
+            webdriverUpdateStandalone: {
+                cmd: 'webdriver-manager update --standalone'
             },
             startWebListener: {
                 cmd: 'dnx . web'
@@ -82,6 +85,7 @@ module.exports = function (grunt) {
     //настроим запуск задач
     grunt.registerTask('start-weblistener', ['exec:startWebListener']);
     grunt.registerTask('webdriver-update', ['exec:webdriverUpdate']);
+    grunt.registerTask('webdriver-update-standalone', ['exec:webdriverUpdateStandalone']);
     grunt.registerTask('protractor-server-start', ['exec:webdriverStart']);
     grunt.registerTask('protractor-tests-start', ['protractor_webdriver:tests']);
     grunt.registerTask('protractor-console-tests-start', ['exec:protractorStart']);

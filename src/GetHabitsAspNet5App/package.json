@@ -22,6 +22,7 @@
   },
   "scripts": {
     "update-webdriver": "webdriver-manager update",
+    "update-webdriver-standalone": "webdriver-manager update --standalone",
     "start-protractor": "webdriver-manager start",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor protractor.conf.js"

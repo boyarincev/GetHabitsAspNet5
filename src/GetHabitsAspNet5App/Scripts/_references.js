@@ -8,6 +8,7 @@
 /// <reference path="Controllers/HabitsControllers.js" />
 /// <reference path="Controllers/tests/HabitsControllerE2ETests.js" />
 /// <reference path="Controllers/tests/HabitsControllerTests.js" />
+/// <reference path="services/checkinservice.js" />
 /// <reference path="Services/habitsService.js" />
 /// <reference path="Services/tests/habitsServiceTests.js" />
 /// <reference path="../wwwroot/app.js" />

@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-    angular.module("getHabitsApp", [ "ngRoute", "getHabitsApp.habitsService", "getHabitsApp.HabitsControllers" ]).config(config).constant("AppName", "getHabitsApp");
+    angular.module("getHabitsApp", [ "ngRoute", "getHabitsApp.habitsService", "getHabitsApp.checkinService", "getHabitsApp.HabitsControllers" ]).config(config).constant("AppName", "getHabitsApp");
     config.$inject = [ "$routeProvider", "$locationProvider" ];
     function config($routeProvider, $locationProvider) {
         $routeProvider.when("/app", {
@@ -17,8 +17,8 @@
 (function() {
     "use strict";
     angular.module("getHabitsApp.HabitsControllers", []).controller("HabitsListController", HabitsListController);
-    HabitsListController.$inject = [ "$scope", "habitsService" ];
-    function HabitsListController($scope, habitsService) {
+    HabitsListController.$inject = [ "$scope", "habitsService", "checkinService" ];
+    function HabitsListController($scope, habitsService, checkinsService) {
         $scope.creatingHabit = false;
         $scope.editable = false;
         $scope.amountCheckins = 12;
@@ -102,6 +102,28 @@
                 checkin.viewState = "glyphicon-remove-circle checkin-not-done";
                 break;
             }
+        }
+    }
+})();
+
+(function() {
+    "use strict";
+    angular.module("getHabitsApp.checkinService", [ "ngResource" ]).constant("apiUrl", "api/checkins").factory("checkinService", checkinService);
+    checkinService.$inject = [ "$resource", "apiUrl" ];
+    function checkinService($resource, apiUrl) {
+        var Checkin = $resource(apiUrl, {
+            habitId: "@habitId",
+            date: "@date"
+        }, {});
+        return {
+            setState: setState
+        };
+        function setState(habitId, date, state) {
+            var checkin = Checkin.save({
+                habitId: habitId,
+                date: date,
+                state: state
+            });
         }
     }
 })();

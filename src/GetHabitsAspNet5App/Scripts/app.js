@@ -6,6 +6,7 @@
         'ngRoute',
         // Custom modules
         'getHabitsApp.habitsService',
+        'getHabitsApp.checkinService',
         'getHabitsApp.HabitsControllers'
 
         // 3rd Party Modules

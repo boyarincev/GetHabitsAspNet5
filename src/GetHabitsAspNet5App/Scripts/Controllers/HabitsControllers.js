@@ -5,9 +5,9 @@
         .module('getHabitsApp.HabitsControllers', [])
         .controller('HabitsListController', HabitsListController);
 
-    HabitsListController.$inject = ['$scope', 'habitsService'];
+    HabitsListController.$inject = ['$scope', 'habitsService', 'checkinService'];
 
-    function HabitsListController($scope, habitsService) {
+    function HabitsListController($scope, habitsService, checkinsService) {
 
         //Properties
         $scope.creatingHabit = false;
@@ -95,6 +95,7 @@
             }
 
             setUpViewState(checkin);
+
         }
 
         function setUpViewState(checkin) {
