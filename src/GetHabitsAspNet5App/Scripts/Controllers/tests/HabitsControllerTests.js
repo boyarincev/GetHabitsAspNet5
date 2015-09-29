@@ -17,7 +17,7 @@
             habit = { Name: 'Thinking about life' };
         });
 
-        describe('Test HabitsListController:', function () {
+        describe('Testing HabitsListController:', function () {
             var habitService;
             var habitsController;
 
@@ -203,7 +203,7 @@
             });
 
             describe('setUpViewState() method testing:', function () {
-                it('By 0 State checkin property have to sets up "glyphicon-ban-circle checkin-missed" viewState property', function () {
+                it('At 0 State of checkin property, have to sets up "glyphicon-ban-circle checkin-missed" viewState property', function () {
                     //Arrange
                     var checkin = { State: 0 };
 
@@ -214,7 +214,7 @@
                     expect(checkin.viewState).toBe('glyphicon-ban-circle checkin-missed');
                 });
 
-                it('By 1 State checkin property have to sets up "glyphicon-ok-circle checkin-done" viewState property', function () {
+                it('At 1 State of checkin property, have to sets up "glyphicon-ok-circle checkin-done" viewState property', function () {
                     //Arrange
                     var checkin = { State: 1 };
 
@@ -225,7 +225,7 @@
                     expect(checkin.viewState).toBe('glyphicon-ok-circle checkin-done');
                 });
 
-                it('By 2 State checkin property have to sets up "glyphicon-remove-circle checkin-not-done" viewState property', function () {
+                it('At 2 State of checkin property, have to sets up "glyphicon-remove-circle checkin-not-done" viewState property', function () {
                     //Arrange
                     var checkin = { State: 2 };
 
@@ -238,7 +238,69 @@
             });
 
             describe('setFollowState() method testing:', function () {
+                it('follow state after 0, have to be 1', function () {
+                    //Arrange
+                    var checkin = { State: 0 };
 
+                    //Act
+                    scope.setFollowState(checkin);
+
+                    //Assert
+                    expect(checkin.State).toBe(1);
+                });
+
+                it('follow state after 1, have to be 2', function () {
+                    //Arrange
+                    var checkin = { State: 1 };
+
+                    //Act
+                    scope.setFollowState(checkin);
+
+                    //Assert
+                    expect(checkin.State).toBe(2);
+                });
+
+                it('follow state after 2, have to be 0', function () {
+                    //Arrange
+                    var checkin = { State: 2 };
+
+                    //Act
+                    scope.setFollowState(checkin);
+
+                    //Assert
+                    expect(checkin.State).toBe(0);
+                });
+
+                it('have to sets up view state', function () {
+                    //Arrange
+                    var checkin = { State: 2 };
+                    sinon.spy(scope, 'setUpViewState');
+
+                    //Act
+                    scope.setFollowState(checkin);
+                    //scope.setUpViewState(checkin);
+
+                    //Assert
+                    expect(scope.setUpViewState.called).toBe(true);
+                });
+
+                it('have to calls setState method of checkinService', function() {
+                    //Arrange
+                    var checkinService;
+
+                    inject(function (_checkinService_) {
+                        checkinService = _checkinService_;
+                    });
+
+                    sinon.spy(checkinService, 'setState');
+                    var checkin = { State: 2 };
+
+                    //Act
+                    scope.setFollowState(checkin);
+
+                    //Assert
+                    expect(checkinService.setState.calledOnce).toBe(true);
+                });
             });
         });
     });

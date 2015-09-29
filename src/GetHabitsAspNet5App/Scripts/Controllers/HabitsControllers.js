@@ -95,7 +95,7 @@
 
             }
 
-            setUpViewState(checkin);
+            $scope.setUpViewState(checkin);
             setupServerState(checkin);
         }
 
