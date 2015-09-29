@@ -10,5 +10,6 @@
 /// <reference path="Controllers/tests/HabitsControllerTests.js" />
 /// <reference path="services/checkinservice.js" />
 /// <reference path="Services/habitsService.js" />
+/// <reference path="services/tests/checkinservicetests.js" />
 /// <reference path="Services/tests/habitsServiceTests.js" />
 /// <reference path="../wwwroot/app.js" />

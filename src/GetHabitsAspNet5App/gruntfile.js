@@ -22,6 +22,9 @@ module.exports = function (grunt) {
                     compress: false,
                     beautify: true,
                     mangle: false
+                    //compress: true,
+                    //beautify: false,
+                    //mangle: true
                 },
                 files: { 'wwwroot/app.js': ['Scripts/app.js', 'Scripts/**/*.js', '!Scripts/**/*Tests.js'] }
             }

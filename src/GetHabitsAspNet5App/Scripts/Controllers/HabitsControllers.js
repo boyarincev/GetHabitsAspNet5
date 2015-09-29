@@ -5,16 +5,17 @@
         .module('getHabitsApp.HabitsControllers', [])
         .controller('HabitsListController', HabitsListController);
 
-    HabitsListController.$inject = ['$scope', 'habitsService', 'checkinService'];
+    HabitsListController.$inject = ['$scope', 'habitService', 'checkinService'];
 
-    function HabitsListController($scope, habitsService, checkinsService) {
+    function HabitsListController($scope, habitService, checkinsService) {
 
         //Properties
         $scope.creatingHabit = false;
         $scope.editable = false;
         $scope.amountCheckins = 12;
         $scope.arrayHead = new Array($scope.amountCheckins);
-        $scope.habits = habitsService.list();
+        $scope.habits = habitService.list();
+
 
         //Methods
         $scope.submitHabit = submitHabit;
@@ -33,7 +34,7 @@
         }
 
         function addNewHabit() {
-            var newHabit = habitsService.createHabitButNotSave();
+            var newHabit = habitService.createHabitButNotSave();
             newHabit.newName = newHabit.Name;
             newHabit.editable = true;
             $scope.creatingHabit = true;
@@ -44,7 +45,7 @@
             habit.Name = habit.newName;
             habit.editable = false;
             habit.saveSuccessEvent = saveSuccess;
-            habitsService.saveHabit(habit);
+            habitService.saveHabit(habit);
         }
 
         function saveSuccess() {
@@ -57,7 +58,7 @@
         }
 
         function delHabit(habit, habitIndex) {
-            habitsService.remove(habit);
+            habitService.remove(habit);
             $scope.habits.splice(habitIndex, 1);
         }
 
@@ -95,7 +96,7 @@
             }
 
             setUpViewState(checkin);
-
+            setupServerState(checkin);
         }
 
         function setUpViewState(checkin) {
@@ -111,6 +112,10 @@
                     break;
             }
 
+        }
+
+        function setupServerState(checkin) {
+            checkinsService.setState(checkin.HabitId, checkin.Date, checkin.State);
         }
     }
 })();

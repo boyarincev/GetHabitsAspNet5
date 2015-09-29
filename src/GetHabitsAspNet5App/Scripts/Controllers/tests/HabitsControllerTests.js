@@ -18,22 +18,22 @@
         });
 
         describe('Test HabitsListController:', function () {
-            var habitsService;
+            var habitService;
             var habitsController;
 
-            beforeEach(inject(function (_habitsService_) {
-                habitsService = _habitsService_;
+            beforeEach(inject(function (_habitService_) {
+                habitService = _habitService_;
 
-                sinon.stub(habitsService, "list", function() {
+                sinon.stub(habitService, "list", function() {
                     return [{ Name: 'Give up smoking' }, { Name: 'Give up drinking' }]
                 });
-                sinon.stub(habitsService, "createHabitButNotSave", function() {
+                sinon.stub(habitService, "createHabitButNotSave", function() {
                     return { Name: '' };
                 });
-                sinon.stub(habitsService, 'saveHabit', function(habit) {
+                sinon.stub(habitService, 'saveHabit', function(habit) {
                     habit.saveSuccessEvent();
                 });
-                sinon.stub(habitsService, 'remove');
+                sinon.stub(habitService, 'remove');
             }));
 
             beforeEach(function () {
@@ -47,8 +47,7 @@
 
                 //Assert
 
-                //TODO delete this expect
-                expect(habitsService.list.calledOnce).toBe(true);
+                expect(habitService.list.calledOnce).toBe(true);
             });
 
             describe('addNewHabit() method testing:', function () {
@@ -201,6 +200,45 @@
                     expect(currentHabit.Name).toBe(scope.habits[currentIndex].Name);
                     expect(initialAmountHabits).toBe(scope.habits.length);
                 });
+            });
+
+            describe('setUpViewState() method testing:', function () {
+                it('By 0 State checkin property have to sets up "glyphicon-ban-circle checkin-missed" viewState property', function () {
+                    //Arrange
+                    var checkin = { State: 0 };
+
+                    //Act
+                    scope.setUpViewState(checkin);
+
+                    //Assert
+                    expect(checkin.viewState).toBe('glyphicon-ban-circle checkin-missed');
+                });
+
+                it('By 1 State checkin property have to sets up "glyphicon-ok-circle checkin-done" viewState property', function () {
+                    //Arrange
+                    var checkin = { State: 1 };
+
+                    //Act
+                    scope.setUpViewState(checkin);
+
+                    //Assert
+                    expect(checkin.viewState).toBe('glyphicon-ok-circle checkin-done');
+                });
+
+                it('By 2 State checkin property have to sets up "glyphicon-remove-circle checkin-not-done" viewState property', function () {
+                    //Arrange
+                    var checkin = { State: 2 };
+
+                    //Act
+                    scope.setUpViewState(checkin);
+
+                    //Assert
+                    expect(checkin.viewState).toBe('glyphicon-remove-circle checkin-not-done');
+                });
+            });
+
+            describe('setFollowState() method testing:', function () {
+
             });
         });
     });

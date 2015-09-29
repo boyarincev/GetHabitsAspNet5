@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-    angular.module("getHabitsApp", [ "ngRoute", "getHabitsApp.habitsService", "getHabitsApp.checkinService", "getHabitsApp.HabitsControllers" ]).config(config).constant("AppName", "getHabitsApp");
+    angular.module("getHabitsApp", [ "ngRoute", "getHabitsApp.habitService", "getHabitsApp.checkinService", "getHabitsApp.HabitsControllers" ]).config(config).constant("AppName", "getHabitsApp");
     config.$inject = [ "$routeProvider", "$locationProvider" ];
     function config($routeProvider, $locationProvider) {
         $routeProvider.when("/app", {
@@ -17,13 +17,13 @@
 (function() {
     "use strict";
     angular.module("getHabitsApp.HabitsControllers", []).controller("HabitsListController", HabitsListController);
-    HabitsListController.$inject = [ "$scope", "habitsService", "checkinService" ];
-    function HabitsListController($scope, habitsService, checkinsService) {
+    HabitsListController.$inject = [ "$scope", "habitService", "checkinService" ];
+    function HabitsListController($scope, habitService, checkinsService) {
         $scope.creatingHabit = false;
         $scope.editable = false;
         $scope.amountCheckins = 12;
         $scope.arrayHead = new Array($scope.amountCheckins);
-        $scope.habits = habitsService.list();
+        $scope.habits = habitService.list();
         $scope.submitHabit = submitHabit;
         $scope.addNewHabit = addNewHabit;
         $scope.editHabit = editHabit;
@@ -35,7 +35,7 @@
         activate();
         function activate() {}
         function addNewHabit() {
-            var newHabit = habitsService.createHabitButNotSave();
+            var newHabit = habitService.createHabitButNotSave();
             newHabit.newName = newHabit.Name;
             newHabit.editable = true;
             $scope.creatingHabit = true;
@@ -45,7 +45,7 @@
             habit.Name = habit.newName;
             habit.editable = false;
             habit.saveSuccessEvent = saveSuccess;
-            habitsService.saveHabit(habit);
+            habitService.saveHabit(habit);
         }
         function saveSuccess() {
             $scope.creatingHabit = false;
@@ -55,7 +55,7 @@
             habit.editable = true;
         }
         function delHabit(habit, habitIndex) {
-            habitsService.remove(habit);
+            habitService.remove(habit);
             $scope.habits.splice(habitIndex, 1);
         }
         function cancelEdit(habit, habitIndex) {
@@ -87,6 +87,7 @@
                 break;
             }
             setUpViewState(checkin);
+            setupServerState(checkin);
         }
         function setUpViewState(checkin) {
             switch (checkin.State) {
@@ -103,26 +104,26 @@
                 break;
             }
         }
+        function setupServerState(checkin) {
+            checkinsService.setState(checkin.HabitId, checkin.Date, checkin.State);
+        }
     }
 })();
 
 (function() {
     "use strict";
-    angular.module("getHabitsApp.checkinService", [ "ngResource" ]).constant("apiUrl", "api/checkins").factory("checkinService", checkinService);
-    checkinService.$inject = [ "$resource", "apiUrl" ];
-    function checkinService($resource, apiUrl) {
-        var Checkin = $resource(apiUrl, {
-            habitId: "@habitId",
-            date: "@date"
-        }, {});
+    angular.module("getHabitsApp.checkinService", [ "ngResource" ]).constant("checkinApiUrl", "api/checkins").factory("checkinService", checkinService);
+    checkinService.$inject = [ "$resource", "checkinApiUrl" ];
+    function checkinService($resource, checkinApiUrl) {
+        var Checkin = $resource(checkinApiUrl, {}, {});
         return {
             setState: setState
         };
         function setState(habitId, date, state) {
-            var checkin = Checkin.save({
-                habitId: habitId,
-                date: date,
-                state: state
+            var checkin = Checkin.save([], {
+                HabitId: habitId,
+                Date: date,
+                State: state
             });
         }
     }
@@ -130,9 +131,9 @@
 
 (function() {
     "use strict";
-    angular.module("getHabitsApp.habitsService", [ "ngResource" ]).constant("apiUrl", "api/habits").factory("habitsService", habitsService);
-    habitsService.$inject = [ "$resource", "apiUrl" ];
-    function habitsService($resource, apiUrl) {
+    angular.module("getHabitsApp.habitService", [ "ngResource" ]).constant("apiUrl", "api/habits").factory("habitService", habitService);
+    habitService.$inject = [ "$resource", "apiUrl" ];
+    function habitService($resource, apiUrl) {
         var Resource = $resource(apiUrl + "/:habitId", {
             habitId: "@Id"
         }, {});

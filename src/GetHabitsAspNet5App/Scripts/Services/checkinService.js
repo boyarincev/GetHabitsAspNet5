@@ -2,13 +2,13 @@
     'use strict';
 
     angular.module('getHabitsApp.checkinService', ['ngResource'])
-        .constant('apiUrl', 'api/checkins')
+        .constant('checkinApiUrl', 'api/checkins')
         .factory('checkinService', checkinService);
 
-    checkinService.$inject = ['$resource', 'apiUrl'];
+    checkinService.$inject = ['$resource', 'checkinApiUrl'];
 
-    function checkinService($resource, apiUrl){
-        var Checkin = $resource(apiUrl, { habitId: '@habitId', date: '@date' }, {
+    function checkinService($resource, checkinApiUrl) {
+        var Checkin = $resource(checkinApiUrl, { }, {
             //query: { method: 'GET', params: {}, isArray: true}
         });
 
@@ -17,7 +17,7 @@
         };
 
         function setState(habitId, date, state) {
-            var checkin = Checkin.save({ habitId: habitId, date: date, state: state });
+            var checkin = Checkin.save([], { HabitId: habitId, Date: date, State: state });
         }
     }
 })();

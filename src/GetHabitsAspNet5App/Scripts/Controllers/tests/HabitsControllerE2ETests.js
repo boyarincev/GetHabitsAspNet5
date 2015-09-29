@@ -1,6 +1,7 @@
 ﻿(function () {
     'use strict';
 
+    //insulate manipulations with DOM elements
     function getHabitsTable() {
         return element(by.id('habits'));
     }
@@ -41,6 +42,7 @@
         return habitTr.element(by.css('button.cancel-edit'));
     }
 
+    //Tests start
     describe('Testing list habit', function () {
         var habitsTable;
 

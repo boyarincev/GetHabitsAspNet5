@@ -5,7 +5,7 @@
         // Angular modules
         'ngRoute',
         // Custom modules
-        'getHabitsApp.habitsService',
+        'getHabitsApp.habitService',
         'getHabitsApp.checkinService',
         'getHabitsApp.HabitsControllers'
 
