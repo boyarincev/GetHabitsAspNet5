@@ -43,7 +43,7 @@
     }
 
     //Tests start
-    describe('Testing list habit', function () {
+    describe('Testing list habit:', function () {
         var habitsTable;
 
         beforeEach(function () {
@@ -201,42 +201,80 @@
             var deleteButton;
             var sendHabitButton;
             var inputControl;
-            var firstHabitName
+            var firstHabitName;
+            var cancelEditButton;
 
             beforeEach(function () {
                 firstHabitTrInTable = getAllTrInTable(habitsTable).last();
                 firstHabitName = getSpanWithDisplayedHabitName(firstHabitTrInTable);
                 inputControl = getInputInHabitRow(firstHabitTrInTable);
                 sendHabitButton = getSendHabitButton(firstHabitTrInTable);
+                cancelEditButton = getCancelEdit(firstHabitTrInTable);
                 editButton = getEditButton(firstHabitTrInTable);
                 deleteButton = getDeleteButton(firstHabitTrInTable);
             });
 
             it('edit name exist habit', function () {
+                //Arrange
                 var initialHabitName;
                 firstHabitName.getText().then(function(habitName) {
                     initialHabitName = habitName;
                 });
-                firstHabitTrInTable.click();
+                //Act
+                firstHabitName.click();
                 editButton.click();
                 inputControl.sendKeys('Addon');
                 sendHabitButton.click();
+                //Assert
                 firstHabitName.getText().then(function(finalHabitName) {
                     expect(initialHabitName + 'Addon').toBe(finalHabitName);
                 });
             });
 
+            it('cancel edit after enter new name', function () {
+                //Arrange
+                var initialHabitName;
+                firstHabitName.getText().then(function (habitName) {
+                    initialHabitName = habitName;
+                });
+                //Act
+                firstHabitName.click();
+                editButton.click();
+                inputControl.sendKeys('Addon');
+                cancelEditButton.click();
+                //Assert
+                firstHabitName.getText().then(function (finalHabitName) {
+                    expect(initialHabitName).toBe(finalHabitName);
+                });
+            });
+
             it("delete exist habit", function () {
+                //Arrange
                 var countRowsBefore = getAllTrInTable(habitsTable).count();
                 var name = firstHabitName.getText();
                 expect(getSpanWhichDisplayHabitName(name).isPresent()).toBe(true);
-                firstHabitTrInTable.click();
+                //Act
+                firstHabitName.click();
                 deleteButton.click();
+                //Assert
                 getAllTrInTable(habitsTable).count().then(function (countRowsAfter) {
                     expect(countRowsBefore).toBe(countRowsAfter + 1);
                 });
 
                 expect(getSpanWhichDisplayHabitName(name).isPresent()).toBe(false);
+            });
+        });
+
+        describe('testing Checkins', function () {
+            it('click checkin link', function () {
+                //Arrange
+                var lastTr = getAllTrInTable(habitsTable).last();
+                var firstSpanCheckin = lastTr.element(by.css('td.checkin span'));
+                var firstSpanCheckinClass = firstSpanCheckin.getAttribute('class');
+
+                firstSpanCheckin.click();
+
+                expect(firstSpanCheckinClass).not.toBe(firstSpanCheckin.getAttribute('class'));
             });
         });
     });
