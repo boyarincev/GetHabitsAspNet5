@@ -23,6 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configura
 		PublishScripts\Configurations\GetHabitsAspNet5App-WAWS-dev.json = PublishScripts\Configurations\GetHabitsAspNet5App-WAWS-dev.json
 	EndProjectSection
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "GetHabitsAspNet5App.Tests", "GetHabitsAspNet5App.Tests\GetHabitsAspNet5App.Tests.xproj", "{650A5A85-5956-491E-9312-5E25A27D1108}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{7490F6A7-C23B-49E1-B0BC-739B8FE4599F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,10 @@ Global
 		{3655C837-1AA8-4F96-8D48-3B3539FC481D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3655C837-1AA8-4F96-8D48-3B3539FC481D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3655C837-1AA8-4F96-8D48-3B3539FC481D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{650A5A85-5956-491E-9312-5E25A27D1108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{650A5A85-5956-491E-9312-5E25A27D1108}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{650A5A85-5956-491E-9312-5E25A27D1108}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{650A5A85-5956-491E-9312-5E25A27D1108}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -40,5 +48,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3655C837-1AA8-4F96-8D48-3B3539FC481D} = {0C962B85-1E4E-4559-959A-1B36FDCA61A3}
 		{74055D7E-6E2E-4FF0-B482-44C75583E26D} = {CB0F6586-63A5-45DC-BB11-FBB1E4DDEA1B}
+		{650A5A85-5956-491E-9312-5E25A27D1108} = {7490F6A7-C23B-49E1-B0BC-739B8FE4599F}
 	EndGlobalSection
 EndGlobal
