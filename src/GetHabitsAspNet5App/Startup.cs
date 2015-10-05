@@ -14,9 +14,10 @@ namespace GetHabitsAspNet5App
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder ap    )
         {
             app.UseStaticFiles();
 
