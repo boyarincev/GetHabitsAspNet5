@@ -8,6 +8,7 @@ using Microsoft.Framework.DependencyInjection;
 using GetHabitsAspNet5App.Models.DomainModels;
 using Microsoft.Framework.Configuration;
 using Microsoft.Data.Entity;
+using GetHabitsAspNet5App.Services;
 
 namespace GetHabitsAspNet5App
 {
@@ -23,7 +24,7 @@ namespace GetHabitsAspNet5App
             services.AddMvc();
             services.AddEntityFramework().AddSqlServer()
                 .AddDbContext<GetHabitsContext>(options => options.UseSqlServer(connection));
-            
+            services.AddScoped<HabitService>();
         }
 
         public void Configure(IApplicationBuilder app)
