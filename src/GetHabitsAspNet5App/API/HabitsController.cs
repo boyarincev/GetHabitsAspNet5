@@ -12,6 +12,13 @@ namespace GetHabitsAspNet5App.Api
     [Route("api/[controller]")]
     public class HabitsController : Controller
     {
+        private readonly GetHabitsContext _dbcontext;
+
+        public HabitsController(GetHabitsContext dbcontext)
+        {
+            _dbcontext = dbcontext;
+        }
+
         // GET: api/values
         [HttpGet]
         public IEnumerable<Habit> Get()
