@@ -44,8 +44,10 @@
             habit.saveSuccessEvent();
         }
 
-        function saveHabitError() {
+        function saveHabitError(headers) {
             //TODO нужно что-то делать при ошибке
+            //Думаю, что нужно выдавать сообщение о ошибке
+            var hdrs = headers;
         }
     }
 })();

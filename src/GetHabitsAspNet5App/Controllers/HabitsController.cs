@@ -72,7 +72,7 @@ namespace GetHabitsAspNet5App.Api
 
             if (habitResult == null)
             {
-                return HttpNotFound();
+                return HttpBadRequest();
             }
 
             return new ObjectResult(habitResult);

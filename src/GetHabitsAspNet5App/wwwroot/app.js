@@ -162,6 +162,8 @@
             habit.saving = false;
             habit.saveSuccessEvent();
         }
-        function saveHabitError() {}
+        function saveHabitError(headers) {
+            var hdrs = headers;
+        }
     }
 })();
