@@ -3,6 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Data.Entity;
+using Microsoft.Data;
+using Microsoft.Data.Entity.Infrastructure;
+using Microsoft.Framework.Logging;
+using Microsoft.Data.Entity.Internal;
+using Microsoft.Framework.DependencyInjection;
 
 namespace GetHabitsAspNet5App.Services
 {
@@ -19,9 +25,9 @@ namespace GetHabitsAspNet5App.Services
         /// Get all Habit entities
         /// </summary>
         /// <returns>querying Habit collection</returns>
-        public IEnumerable<Habit> Get()
+        public async Task<IEnumerable<Habit>> Get()
         {
-            return _dbContext.Habits;
+            return await _dbContext.Habits.ToListAsync();
         }
 
         /// <summary>
@@ -35,11 +41,12 @@ namespace GetHabitsAspNet5App.Services
             if (habit.Id != 0)
                 return null;
 
-            //Checkins we save separately from Habit
-            habit.Checkins = null;
-            _dbContext.Habits.Add(habit);
+            var clearHabit = new Habit(habit.Name);
+
+            _dbContext.Habits.Add(clearHabit);
             await _dbContext.SaveChangesAsync();
-            return habit;
+
+            return clearHabit;
         }
 
         /// <summary>
@@ -49,7 +56,7 @@ namespace GetHabitsAspNet5App.Services
         /// <returns>Changed Habit if editing is happened and null if not</returns>
         public async Task<Habit> Edit(Habit habit)
         {
-            var original = _dbContext.Habits.FirstOrDefault(h => h.Id == habit.Id);
+            var original = await _dbContext.Habits.FirstOrDefaultAsync(h => h.Id == habit.Id);
 
             if (original == null)
                 return null;
@@ -67,7 +74,7 @@ namespace GetHabitsAspNet5App.Services
         /// <returns></returns>
         public async Task<Boolean> Delete(Int64 Id)
         {
-            var original = _dbContext.Habits.FirstOrDefault(h => h.Id == Id);
+            var original = await _dbContext.Habits.FirstOrDefaultAsync(h => h.Id == Id);
 
             if (original == null)
                 return false;
@@ -77,5 +84,22 @@ namespace GetHabitsAspNet5App.Services
 
             return true;
         }
+
+        public async Task<IEnumerable<Checkin>> GetCheckins(Int64 habitId, DateTime startDate, DateTime endDate)
+        {
+
+            var dateDiff = DateTime.Compare(startDate, endDate);
+
+            if (dateDiff > 0)
+            {
+                return new List<Checkin>();
+            }
+
+            var list = _dbContext.Habits.ToList();
+            var habitQuery = _dbContext.Habits.Include(h => h.Checkins);
+            var habit = habitQuery.FirstOrDefault(h => h.Id == habitId);
+            
+            return habit.Checkins;
+        } 
     }
 }

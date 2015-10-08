@@ -12,5 +12,15 @@ namespace GetHabitsAspNet5App.Models.DomainModels
         [Required]
         public string Name { get; set; }
         public ICollection<Checkin> Checkins { get; set; }
+
+        public Habit(string name)
+        {
+            Name = name;
+        }
+
+        public Habit()
+        {
+
+        }
     }
 }

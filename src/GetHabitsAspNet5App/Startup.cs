@@ -9,6 +9,7 @@ using GetHabitsAspNet5App.Models.DomainModels;
 using Microsoft.Framework.Configuration;
 using Microsoft.Data.Entity;
 using GetHabitsAspNet5App.Services;
+using Microsoft.Framework.Logging;
 
 namespace GetHabitsAspNet5App
 {
@@ -27,13 +28,16 @@ namespace GetHabitsAspNet5App
             services.AddScoped<HabitService>();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole(LogLevel.Verbose);
+
             app.UseStaticFiles();
 
             app.UseMvc(routeBuilder =>
             {
                 routeBuilder.MapRoute("appRoute", "app/{*all}", new { controller = "Home", action = "Index"});
+                //routeBuilder.MapRoute("apiRoute", "api/{controller}");
                 routeBuilder.MapRoute("clientSideRouting", "{controller=Home}/{action=Index}/{id?}");
             });
 

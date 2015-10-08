@@ -22,7 +22,7 @@ namespace GetHabitsAspNet5App.Api
 
         // GET: api/values
         [HttpGet]
-        public IEnumerable<Habit> Get()
+        public async Task<IEnumerable<Habit>> Get()
         {
             //return new List<Habit>()
             //{
@@ -32,8 +32,9 @@ namespace GetHabitsAspNet5App.Api
             //    new Habit() {Id = 4, Name = "Делать зарядку", Checkins = new List<Checkin>() { new Checkin() { Date = new DateTime(2015, 09, 16), State = CheckinState.Done, HabitId = 4 }, new Checkin() { Date = new DateTime(2015, 09, 15), State = CheckinState.Done, HabitId = 4 }, new Checkin() { Date = new DateTime(2015, 09, 14), State = CheckinState.Done, HabitId = 4 }, new Checkin() { Date = new DateTime(2015, 09, 13), State = CheckinState.Done, HabitId = 4 } } },
             //    new Habit() {Id = 5, Name = "Приборка дома", Checkins = new List<Checkin>() { new Checkin() { Date = new DateTime(2015, 09, 16), State = CheckinState.Done, HabitId = 5 }, new Checkin() { Date = new DateTime(2015, 09, 15), State = CheckinState.Done, HabitId = 5 }, new Checkin() { Date = new DateTime(2015, 09, 14), State = CheckinState.Done, HabitId = 5 }, new Checkin() { Date = new DateTime(2015, 09, 13), State = CheckinState.Done, HabitId = 5 } } }
             //};
+            var checkins = _habitService.GetCheckins(1, DateTime.Now.AddMonths(-1), DateTime.Now);
 
-            return _habitService.Get();
+            return await _habitService.Get();
         }
 
         //TODO need implement
