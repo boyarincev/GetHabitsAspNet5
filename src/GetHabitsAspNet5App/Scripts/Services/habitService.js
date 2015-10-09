@@ -9,7 +9,7 @@
     habitService.$inject = ['$resource', 'apiUrl'];
 
     function habitService($resource, apiUrl) {
-        var Resource = $resource(apiUrl + '/:habitId', { habitId: '@Id' }, {
+        var Resource = $resource(apiUrl + '/:habitId', { habitId: '@Id', checkinLastDaysAmount: 12 }, {
             //query: { method: 'GET', params: {}, isArray: true}
         });
 

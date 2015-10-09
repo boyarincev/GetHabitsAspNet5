@@ -25,9 +25,52 @@ namespace GetHabitsAspNet5App.Services
         /// Get all Habit entities
         /// </summary>
         /// <returns>querying Habit collection</returns>
-        public async Task<IEnumerable<Habit>> Get()
+        public async Task<IEnumerable<Habit>> GetHabits()
         {
             return await _dbContext.Habits.ToListAsync();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="checkinStartDate"></param>
+        /// <param name="checkinEndDate"></param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Habit>> GetHabitsWithCheckins(DateTime checkinStartDate, DateTime checkinEndDate)
+        {
+            var habitCheckinsList = await _dbContext.Habits
+                .GroupJoin(_dbContext.Checkins.Where(ch => ch.Date >= checkinStartDate && ch.Date <= checkinEndDate),
+                    habit => habit.Id,
+                    checkin => checkin.Id,
+                    (habit, checkins) => new { Habit = habit, Checkins = checkins}).ToListAsync();
+
+            var resultHabitList = new List<Habit>();
+
+            foreach (var item in habitCheckinsList)
+            {
+                item.Habit.Checkins = GetFullCheckinArray(item.Checkins.ToList(), checkinStartDate, checkinEndDate).ToList();
+                resultHabitList.Add(item.Habit);
+            }
+
+            return resultHabitList.AsEnumerable();
+        }
+
+        private IEnumerable<Checkin> GetFullCheckinArray(IEnumerable<Checkin> checkins, DateTime checkinStartDate, DateTime checkinEndDate)
+        {
+            var dateDifferent = (checkinEndDate.Date - checkinStartDate.Date).Days;
+
+            //While restrict possible amount queryed days
+            if (dateDifferent > 30)
+                dateDifferent = 30;
+
+            var fullCheckins = new List<Checkin>;
+
+            for (int i = 0; i < dateDifferent; i++)
+            {
+                //need algorithm for populating list of checkins
+            }
+
+            return fullCheckins;
         }
 
         /// <summary>
@@ -35,7 +78,7 @@ namespace GetHabitsAspNet5App.Services
         /// </summary>
         /// <param name="habit">Habit for saving, Id have to be equal 0</param>
         /// <returns>Habit if creating is happened and null if not</returns>
-        public async Task<Habit> Create(Habit habit)
+        public async Task<Habit> CreateHabit(Habit habit)
         {
             //we create new entity if only Id equal 0
             if (habit.Id != 0)
@@ -54,7 +97,7 @@ namespace GetHabitsAspNet5App.Services
         /// </summary>
         /// <param name="habit">Habit with changed fields</param>
         /// <returns>Changed Habit if editing is happened and null if not</returns>
-        public async Task<Habit> Edit(Habit habit)
+        public async Task<Habit> EditHabit(Habit habit)
         {
             var original = await _dbContext.Habits.FirstOrDefaultAsync(h => h.Id == habit.Id);
 
@@ -72,7 +115,7 @@ namespace GetHabitsAspNet5App.Services
         /// </summary>
         /// <param name="habit">Habit entity for deleting</param>
         /// <returns></returns>
-        public async Task<Boolean> Delete(Int64 Id)
+        public async Task<Boolean> DeleteHabit(Int64 Id)
         {
             var original = await _dbContext.Habits.FirstOrDefaultAsync(h => h.Id == Id);
 
@@ -95,11 +138,11 @@ namespace GetHabitsAspNet5App.Services
                 return new List<Checkin>();
             }
 
-            var list = _dbContext.Habits.ToList();
-            var habitQuery = _dbContext.Habits.Include(h => h.Checkins);
-            var habit = habitQuery.FirstOrDefault(h => h.Id == habitId);
-            
-            return habit.Checkins;
+            var checkins = await _dbContext.Checkins
+                .Where(ch => ch.HabitId == habitId && ch.Date >= startDate && ch.Date <= endDate)
+                .ToListAsync();
+
+            return checkins;
         } 
     }
 }
