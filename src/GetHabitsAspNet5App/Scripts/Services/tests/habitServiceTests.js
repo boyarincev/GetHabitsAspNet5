@@ -23,7 +23,7 @@
                 habitService.list();
 
                 //Asserts
-                $httpBackend.expectGET(apiUrl).respond([]);
+                $httpBackend.expectGET(apiUrl + "?checkinLastDaysAmount=12").respond([]);
                 $httpBackend.flush();
             });
         });

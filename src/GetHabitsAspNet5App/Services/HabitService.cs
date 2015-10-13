@@ -31,31 +31,41 @@ namespace GetHabitsAspNet5App.Services
         }
 
         /// <summary>
-        /// 
+        /// Get all Habits with populated collection of checkins
         /// </summary>
-        /// <param name="checkinStartDate"></param>
-        /// <param name="checkinEndDate"></param>
+        /// <param name="checkinStartDate">Smallest date for checkin</param>
+        /// <param name="checkinEndDate">Largest date for checkin</param>
         /// <returns></returns>
         public async Task<IEnumerable<Habit>> GetHabitsWithCheckins(DateTime checkinStartDate, DateTime checkinEndDate)
         {
             var habitCheckinsList = await _dbContext.Habits
                 .GroupJoin(_dbContext.Checkins.Where(ch => ch.Date >= checkinStartDate && ch.Date <= checkinEndDate),
                     habit => habit.Id,
-                    checkin => checkin.Id,
+                    checkin => checkin.HabitId,
                     (habit, checkins) => new { Habit = habit, Checkins = checkins}).ToListAsync();
 
             var resultHabitList = new List<Habit>();
 
             foreach (var item in habitCheckinsList)
             {
-                item.Habit.Checkins = GetFullCheckinArray(item.Checkins.ToList(), checkinStartDate, checkinEndDate).ToList();
+                item.Habit.Checkins = GetFullCheckinArray(item.Habit.Id, item.Checkins.ToList(), checkinStartDate, checkinEndDate).ToList();
                 resultHabitList.Add(item.Habit);
             }
 
             return resultHabitList.AsEnumerable();
         }
 
-        private IEnumerable<Checkin> GetFullCheckinArray(IEnumerable<Checkin> checkins, DateTime checkinStartDate, DateTime checkinEndDate)
+        /// <summary>
+        /// Get Array of checkins, located in order from largest date to smallest date. 
+        /// If input checkin List, not contains checkin for any date, for this date create new checkin with State equal NotSet.
+        /// If difference between end date and start date large than 30 days, result array will be contains only 30 checkins for largest dates
+        /// </summary>
+        /// <param name="habitId"></param>
+        /// <param name="checkins">exist in Db checkins</param>
+        /// <param name="checkinStartDate"></param>
+        /// <param name="checkinEndDate"></param>
+        /// <returns>Array of checkins, located in order from largest date to smallest date.</returns>
+        private IEnumerable<Checkin> GetFullCheckinArray(Int64 habitId, IEnumerable<Checkin> checkins, DateTime checkinStartDate, DateTime checkinEndDate)
         {
             var dateDifferent = (checkinEndDate.Date - checkinStartDate.Date).Days;
 
@@ -63,11 +73,21 @@ namespace GetHabitsAspNet5App.Services
             if (dateDifferent > 30)
                 dateDifferent = 30;
 
-            var fullCheckins = new List<Checkin>;
+            var fullCheckins = new List<Checkin>();
 
-            for (int i = 0; i < dateDifferent; i++)
+            var sortedCheckinsFromDb = checkins.OrderByDescending(ch => ch.Date).ToArray();
+            var checkinArrEnum = 0;
+            
+            for (int i = 0; i <= dateDifferent; i++)
             {
-                //need algorithm for populating list of checkins
+                if (sortedCheckinsFromDb.Length > checkinArrEnum && DateTime.Now.Date.AddDays(-i) == sortedCheckinsFromDb[checkinArrEnum].Date.Date )
+                {
+                    fullCheckins.Add(sortedCheckinsFromDb[checkinArrEnum]);
+                    checkinArrEnum++;
+                    continue;
+                }
+
+                fullCheckins.Add(new Checkin() { Date = DateTime.Now.Date.AddDays(-i), HabitId = habitId, State = CheckinState.NotSet });
             }
 
             return fullCheckins;
@@ -144,5 +164,36 @@ namespace GetHabitsAspNet5App.Services
 
             return checkins;
         } 
+
+        /// <summary>
+        /// Sets checkin state. Creates checkin if it doesn't exist.
+        /// </summary>
+        /// <param name="checkin">Checkin for saving</param>
+        /// <returns>Saved checkin or Null if Habit doesn't exist</returns>
+        public async Task<Checkin> SetCheckinState(Checkin checkin)
+        {
+            var habitExists = _dbContext.Habits.Any(h => h.Id == checkin.HabitId);
+
+            if (!habitExists)
+                return null;
+
+            var dbCheckin = _dbContext.Checkins.Where(ch => ch.HabitId == checkin.HabitId && ch.Date.Date == checkin.Date.Date).FirstOrDefault();
+
+            if (dbCheckin != null)
+            {
+                if (checkin.State != dbCheckin.State)
+                    checkin.State = dbCheckin.State;
+            }
+            else
+            {
+                var newCheckin = new Checkin() { Date = checkin.Date.Date, HabitId = checkin.HabitId, State = checkin.State };
+                _dbContext.Checkins.Add(newCheckin);
+                dbCheckin = newCheckin;
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return dbCheckin;
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace GetHabitsAspNet5App.Api
             //};
 
 
-            var result = await _habitService.GetHabitsWithCheckins(DateTime.Now.AddDays(-checkinLastDaysAmount), DateTime.Now);
+            var result = await _habitService.GetHabitsWithCheckins(DateTime.Now.Date.AddDays(-(checkinLastDaysAmount - 1)), DateTime.Now.Date);
             return result;
         }
 

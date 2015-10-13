@@ -31,7 +31,7 @@
                     return { Name: '' };
                 });
                 sinon.stub(habitService, 'saveHabit', function(habit) {
-                    habit.saveSuccessEvent();
+                    
                 });
                 sinon.stub(habitService, 'remove');
             }));
@@ -75,10 +75,6 @@
                     expect(lastHabit.editable).toBe(true);
                 });
 
-                it('scope property creatingHabit have to be true', function () {
-                    expect(scope.creatingHabit).toBe(true);
-                });
-
                 it('newName property of habit have to copy Name property', function () {
                     var lastHabit = scope.habits.pop();
 
@@ -92,7 +88,6 @@
                     //Arrange
                     habit.newName = 'Thinking about life 2';
                     habit.editable = true;
-                    scope.creatingHabit = true;
 
                     //Act
                     scope.submitHabit(habit);
@@ -106,11 +101,6 @@
                 it('editable property have to be false', function () {
                     //Assert
                     expect(habit.editable).toBe(false);
-                });
-
-                it('creatingHabit of scope property have to be false', function () {
-                    //Assert
-                    expect(scope.creatingHabit).toBe(false);
                 });
             });
 
@@ -157,7 +147,6 @@
                     //Arrange
                     currentHabit = scope.habits[currentIndex];
                     currentHabit.editable = true;
-                    scope.creatingHabit = true;
                     initialAmountHabits = scope.habits.length;
 
                     //Act
@@ -167,11 +156,6 @@
                 it('editable property have to be false', function () {
                     //Assert
                     expect(currentHabit.editable).toBe(false);
-                });
-
-                it('creatingHabit property of scope have to be false', function () {
-                    //Assert
-                    expect(scope.creatingHabit).toBe(false);
                 });
 
                 it('newName property of habit have to equal Name property', function () {

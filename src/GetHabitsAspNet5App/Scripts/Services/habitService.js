@@ -9,7 +9,7 @@
     habitService.$inject = ['$resource', 'apiUrl'];
 
     function habitService($resource, apiUrl) {
-        var Resource = $resource(apiUrl + '/:habitId', { habitId: '@Id', checkinLastDaysAmount: 12 }, {
+        var Resource = $resource(apiUrl + '/:habitId', { habitId: '@Id' }, {
             //query: { method: 'GET', params: {}, isArray: true}
         });
 
@@ -21,7 +21,7 @@
         };
 
         function list() {
-            return Resource.query();
+            return Resource.query({ checkinLastDaysAmount: 12 });
         }
 
         function remove(habit) {
@@ -31,6 +31,7 @@
         function createHabitButNotSave() {
             var newHabit = new Resource({});
             newHabit.Name = '';
+            //newHabit.checkins = getEmptyArrayCheckins();
             return newHabit;
         }
 
@@ -41,7 +42,6 @@
 
         function saveHabitSuccess(habit) {
             habit.saving = false;
-            habit.saveSuccessEvent();
         }
 
         function saveHabitError(headers) {
