@@ -18,12 +18,13 @@
         describe('list() method:', function () {
             it('have to be sent get request on apiUrl', function () {
                 //Arrange
+                var amountCheckins = 12;
 
                 //Act
-                habitService.list();
+                habitService.list(amountCheckins);
 
                 //Asserts
-                $httpBackend.expectGET(apiUrl + "?checkinLastDaysAmount=12").respond([]);
+                $httpBackend.expectGET(apiUrl + "?checkinLastDaysAmount=" + amountCheckins).respond([]);
                 $httpBackend.flush();
             });
         });

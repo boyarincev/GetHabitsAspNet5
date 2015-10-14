@@ -48,14 +48,14 @@ namespace GetHabitsAspNet5App.Api
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Habit habit)
+        public async Task<IActionResult> Post([FromBody]Habit habit, int checkinLastDaysAmount)
         {
             Habit habitResult;
 
             if (habit.Id != 0)
                 return HttpBadRequest();
 
-            habitResult = await _habitService.CreateHabit(habit);
+            habitResult = await _habitService.CreateHabit(habit, checkinLastDaysAmount);
 
             if (habitResult == null)
                 return HttpBadRequest();
@@ -65,12 +65,12 @@ namespace GetHabitsAspNet5App.Api
 
         // PUT api/values/5
         [HttpPost("{id}")]
-        public async Task<IActionResult> Post(int id, [FromBody]Habit habit)
+        public async Task<IActionResult> Post(int id, [FromBody]Habit habit, int checkinLastDaysAmount)
         {
             if (habit.Id == 0)
                 return HttpBadRequest();
 
-            var habitResult = await _habitService.EditHabit(habit);
+            var habitResult = await _habitService.EditHabit(habit, checkinLastDaysAmount);
 
             if (habitResult == null)
             {

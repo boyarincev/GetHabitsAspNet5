@@ -13,7 +13,7 @@
         $scope.editable = false;
         $scope.amountCheckins = 12;
         $scope.arrayHead = new Array($scope.amountCheckins);
-        $scope.habits = habitService.list();
+        $scope.habits = habitService.list($scope.amountCheckins);
         $scope.editingHabit = false;
 
         //Methods
@@ -33,7 +33,7 @@
         }
 
         function addNewHabit() {
-            var newHabit = habitService.createHabitButNotSave();
+            var newHabit = habitService.createHabitButNotSave($scope.amountCheckins);
             newHabit.newName = newHabit.Name;
             newHabit.editable = true;
             $scope.habits.push(newHabit);
@@ -44,7 +44,7 @@
             habit.Name = habit.newName;
             habit.editable = false;
             $scope.editingHabit = false;
-            habitService.saveHabit(habit);
+            habitService.saveHabit(habit, $scope.amountCheckins);
         }
 
         function editHabit(habit) {

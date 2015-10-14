@@ -9,6 +9,7 @@ using Microsoft.Data.Entity.Infrastructure;
 using Microsoft.Framework.Logging;
 using Microsoft.Data.Entity.Internal;
 using Microsoft.Framework.DependencyInjection;
+using System.Collections;
 
 namespace GetHabitsAspNet5App.Services
 {
@@ -31,7 +32,18 @@ namespace GetHabitsAspNet5App.Services
         }
 
         /// <summary>
-        /// Get all Habits with populated collection of checkins
+        /// Get all Habits with populated collection of checkins.
+        /// </summary>
+        /// <param name="checkinLastDaysAmount">Amount checkins for last days</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<Habit>> GetHabitsWithCheckins(int checkinLastDaysAmount = 0)
+        {
+            var dateRange = GetStartAndEndDatesForLastAmountDays(checkinLastDaysAmount);
+            return await GetHabitsWithCheckins(dateRange.StartDate, dateRange.EndDate);
+        }
+
+        /// <summary>
+        /// Get all Habits with populated collection of checkins.
         /// </summary>
         /// <param name="checkinStartDate">Smallest date for checkin</param>
         /// <param name="checkinEndDate">Largest date for checkin</param>
@@ -42,7 +54,7 @@ namespace GetHabitsAspNet5App.Services
                 .GroupJoin(_dbContext.Checkins.Where(ch => ch.Date >= checkinStartDate && ch.Date <= checkinEndDate),
                     habit => habit.Id,
                     checkin => checkin.HabitId,
-                    (habit, checkins) => new { Habit = habit, Checkins = checkins}).ToListAsync();
+                    (habit, checkins) => new { Habit = habit, Checkins = checkins }).ToListAsync();
 
             var resultHabitList = new List<Habit>();
 
@@ -97,8 +109,9 @@ namespace GetHabitsAspNet5App.Services
         /// Create new Habit
         /// </summary>
         /// <param name="habit">Habit for saving, Id have to be equal 0</param>
+        /// <param name="checkinLastDaysAmount">Amount last checkins in Habit Entity</param>
         /// <returns>Habit if creating is happened and null if not</returns>
-        public async Task<Habit> CreateHabit(Habit habit)
+        public async Task<Habit> CreateHabit(Habit habit, int checkinLastDaysAmount = 0)
         {
             //we create new entity if only Id equal 0
             if (habit.Id != 0)
@@ -109,6 +122,11 @@ namespace GetHabitsAspNet5App.Services
             _dbContext.Habits.Add(clearHabit);
             await _dbContext.SaveChangesAsync();
 
+            var dateRange = GetStartAndEndDatesForLastAmountDays(checkinLastDaysAmount);
+            var checkinEmptyList = new List<Checkin>().AsEnumerable();
+
+            clearHabit.Checkins = GetFullCheckinArray(clearHabit.Id, checkinEmptyList, dateRange.StartDate, dateRange.EndDate).ToList();
+
             return clearHabit;
         }
 
@@ -116,16 +134,28 @@ namespace GetHabitsAspNet5App.Services
         /// Edit Habit entity
         /// </summary>
         /// <param name="habit">Habit with changed fields</param>
+        /// <param name="checkinLastDaysAmount">Amount last checkins in Habit Entity</param>
         /// <returns>Changed Habit if editing is happened and null if not</returns>
-        public async Task<Habit> EditHabit(Habit habit)
+        public async Task<Habit> EditHabit(Habit habit, int checkinLastDaysAmount = 0)
         {
-            var original = await _dbContext.Habits.FirstOrDefaultAsync(h => h.Id == habit.Id);
+            var dateRange = GetStartAndEndDatesForLastAmountDays(checkinLastDaysAmount);
+
+            var habitCheckinsList = await _dbContext.Habits
+                .GroupJoin(_dbContext.Checkins.Where(ch => ch.Date >= dateRange.StartDate && ch.Date <= dateRange.EndDate),
+                    h => h.Id,
+                    checkin => checkin.HabitId,
+                    (h, checkins) => new { Habit = h, Checkins = checkins }).FirstOrDefaultAsync(hc => hc.Habit.Id == habit.Id);
+
+            var original = habitCheckinsList.Habit;
 
             if (original == null)
                 return null;
 
             original.Name = habit.Name;
             await _dbContext.SaveChangesAsync();
+
+            var checkinsResult = GetFullCheckinArray(original.Id, habitCheckinsList.Checkins, dateRange.StartDate, dateRange.EndDate);
+            original.Checkins = checkinsResult.ToList();
 
             return original;
         }
@@ -194,6 +224,26 @@ namespace GetHabitsAspNet5App.Services
             await _dbContext.SaveChangesAsync();
 
             return dbCheckin;
+        }
+
+        private DateRange GetStartAndEndDatesForLastAmountDays(int lastAmountDays)
+        {
+            return new DateRange(DateTime.Now.Date.AddDays(-(lastAmountDays - 1)), DateTime.Now.Date);
+        }
+
+        private struct DateRange
+        {
+            public DateRange(DateTime startDate, DateTime endDate)
+            {
+                _startDate = startDate.Date;
+                _endDate = endDate.Date;
+            }
+
+            private DateTime _startDate;
+            private DateTime _endDate;
+
+            public DateTime StartDate { get { return _startDate; } }
+            public DateTime EndDate { get { return _endDate; } }
         }
     }
 }
