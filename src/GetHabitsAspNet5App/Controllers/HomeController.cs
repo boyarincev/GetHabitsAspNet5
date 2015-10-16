@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
+using Microsoft.Framework.Configuration;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,6 +14,9 @@ namespace GetHabitsAspNet5App.Api
         // GET: /<controller>/
         public IActionResult Index()
         {
+            //ViewBag.Configuration = Startup.Configuration.GetConfigurationSections().ToList();
+            ViewBag.Environment = Startup.Configuration.Get("ASPNET_ENV");
+            ViewBag.ConnectionString = Startup.Configuration.Get("Data:DefaultConnection:ConnectionString");
             return View();
         }
     }

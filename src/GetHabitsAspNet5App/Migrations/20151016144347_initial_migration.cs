@@ -5,20 +5,16 @@ using Microsoft.Data.Entity.Relational.Migrations.Operations;
 
 namespace GetHabitsAspNet5App.Migrations
 {
-    public partial class MyFirstMigration : Migration
+    public partial class initial_migration : Migration
     {
         public override void Up(MigrationBuilder migration)
         {
-            migration.CreateSequence(
-                name: "DefaultSequence",
-                type: "bigint",
-                startWith: 1L,
-                incrementBy: 10);
             migration.CreateTable(
                 name: "Habit",
                 columns: table => new
                 {
-                    Id = table.Column(type: "bigint", nullable: false),
+                    Id = table.Column(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:ValueGeneration", "Identity"),
                     Name = table.Column(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -29,9 +25,10 @@ namespace GetHabitsAspNet5App.Migrations
                 name: "Checkin",
                 columns: table => new
                 {
-                    Id = table.Column(type: "bigint", nullable: false),
+                    Id = table.Column(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:ValueGeneration", "Identity"),
                     Date = table.Column(type: "datetime2", nullable: false),
-                    HabitId = table.Column(type: "bigint", nullable: false),
+                    HabitId = table.Column(type: "bigint", nullable: true),
                     State = table.Column(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -47,7 +44,6 @@ namespace GetHabitsAspNet5App.Migrations
         
         public override void Down(MigrationBuilder migration)
         {
-            migration.DropSequence("DefaultSequence");
             migration.DropTable("Checkin");
             migration.DropTable("Habit");
         }

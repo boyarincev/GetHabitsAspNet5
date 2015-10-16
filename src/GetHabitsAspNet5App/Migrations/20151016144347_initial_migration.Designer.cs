@@ -7,11 +7,11 @@ using GetHabitsAspNet5App.Models.DomainModels;
 namespace GetHabitsAspNet5App.Migrations
 {
     [ContextType(typeof(GetHabitsContext))]
-    partial class MyFirstMigration
+    partial class initial_migration
     {
         public override string Id
         {
-            get { return "20151005120826_MyFirstMigration"; }
+            get { return "20151016144347_initial_migration"; }
         }
         
         public override string ProductVersion
@@ -22,9 +22,7 @@ namespace GetHabitsAspNet5App.Migrations
         public override void BuildTargetModel(ModelBuilder builder)
         {
             builder
-                .Annotation("SqlServer:DefaultSequenceName", "DefaultSequence")
-                .Annotation("SqlServer:Sequence:.DefaultSequence", "'DefaultSequence', '', '1', '10', '', '', 'Int64', 'False'")
-                .Annotation("SqlServer:ValueGeneration", "Sequence");
+                .Annotation("SqlServer:ValueGeneration", "Identity");
             
             builder.Entity("GetHabitsAspNet5App.Models.DomainModels.Checkin", b =>
                 {
@@ -34,7 +32,7 @@ namespace GetHabitsAspNet5App.Migrations
                     
                     b.Property<DateTime>("Date");
                     
-                    b.Property<long>("HabitId");
+                    b.Property<long?>("HabitId");
                     
                     b.Property<int>("State");
                     

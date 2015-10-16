@@ -12,9 +12,7 @@ namespace GetHabitsAspNet5App.Migrations
         public override void BuildModel(ModelBuilder builder)
         {
             builder
-                .Annotation("SqlServer:DefaultSequenceName", "DefaultSequence")
-                .Annotation("SqlServer:Sequence:.DefaultSequence", "'DefaultSequence', '', '1', '10', '', '', 'Int64', 'False'")
-                .Annotation("SqlServer:ValueGeneration", "Sequence");
+                .Annotation("SqlServer:ValueGeneration", "Identity");
             
             builder.Entity("GetHabitsAspNet5App.Models.DomainModels.Checkin", b =>
                 {
