@@ -9,6 +9,7 @@ using GetHabitsAspNet5App.Models.DomainModels;
 using Microsoft.Framework.Configuration;
 using Microsoft.Data.Entity;
 using GetHabitsAspNet5App.Services;
+using Microsoft.Framework.Logging;
 
 namespace GetHabitsAspNet5App
 {
@@ -27,8 +28,10 @@ namespace GetHabitsAspNet5App
             services.AddScoped<HabitService>();
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddConsole(LogLevel.Debug);
+
             app.UseStaticFiles();
 
             app.UseMvc(routeBuilder =>
