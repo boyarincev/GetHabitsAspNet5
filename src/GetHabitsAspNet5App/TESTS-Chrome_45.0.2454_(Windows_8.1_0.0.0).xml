@@ -1,42 +1,39 @@
 <?xml version="1.0"?>
-<testsuite name="Chrome 45.0.2454 (Windows 8.1 0.0.0)" package="unit3" timestamp="2015-10-07T12:44:18" id="0" hostname="PC-BOYARINCEV" tests="35" errors="0" failures="0" time="0.172">
+<testsuite name="Chrome 45.0.2454 (Windows 8.1 0.0.0)" package="unit3" timestamp="2015-10-14T15:39:24" id="0" hostname="PC-BOYARINCEV" tests="32" errors="0" failures="0" time="0.163">
   <properties>
     <property name="browser.fullName" value="Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36"/>
   </properties>
-  <testcase name="have to call list method of habitservice by creating" time="0.036" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="added new habit into habits array" time="0.006" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="the new habit have property editable in true" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="scope property creatingHabit have to be true" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="newName property of habit have to copy Name property" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="newName property have to copying into Name property" time="0.004" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="editable property have to be false" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="creatingHabit of scope property have to be false" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="have to call list method of habitservice by creating" time="0.009" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="added new habit into habits array" time="0.007" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="the new habit have property editable in true" time="0.004" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="newName property of habit have to copy Name property" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="newName property have to copying into Name property" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="editable property have to be false" time="0.009" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
   <testcase name="Name property have to copying to newName property" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
   <testcase name="editable property have to be true" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="need delete habit from habits array" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="editable property have to be false" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="creatingHabit property of scope have to be false" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="need delete habit from habits array" time="0.006" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="editable property have to be false" time="0.008" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
   <testcase name="newName property of habit have to equal Name property" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="if habit not saved yet, it have to be remove from habits" time="0.009" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="if habit saved already, it don't have to be removed from habits" time="0.004" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="At 0 State of checkin property, have to sets up &quot;glyphicon-ban-circle checkin-missed&quot; viewState property" time="0.004" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="At 1 State of checkin property, have to sets up &quot;glyphicon-ok-circle checkin-done&quot; viewState property" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="At 2 State of checkin property, have to sets up &quot;glyphicon-remove-circle checkin-not-done&quot; viewState property" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="follow state after 0, have to be 1" time="0.007" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="follow state after 1, have to be 2" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="follow state after 2, have to be 0" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="have to sets up view state" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="have to calls setState method of checkinService" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
-  <testcase name="checkinApiUrl have to be &quot;api/checkins&quot;" time="0.001" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing checkinService:"/>
-  <testcase name="have to send correct query" time="0.006" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing checkinService:"/>
-  <testcase name="apiUrl have to be &quot;api/habits&quot;" time="0.002" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
-  <testcase name="have to be sent get request on apiUrl" time="0.007" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
-  <testcase name="have to be sent delete request" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
-  <testcase name="have to create object with empty Name property" time="0.001" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
-  <testcase name="saving property until get respond have to be true" time="0.002" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
-  <testcase name="saving property after get success responce have to be false" time="0.002" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
+  <testcase name="if habit not saved yet, it have to be remove from habits" time="0.006" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="if habit saved already, it don't have to be removed from habits" time="0.007" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="At 0 State of checkin property, have to sets up &quot;glyphicon-ban-circle checkin-missed&quot; viewState property" time="0.01" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="At 1 State of checkin property, have to sets up &quot;glyphicon-ok-circle checkin-done&quot; viewState property" time="0.004" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="At 2 State of checkin property, have to sets up &quot;glyphicon-remove-circle checkin-not-done&quot; viewState property" time="0.004" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="follow state after 0, have to be 1" time="0.009" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="follow state after 1, have to be 2" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="follow state after 2, have to be 0" time="0.006" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="have to sets up view state" time="0.007" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="have to calls setState method of checkinService" time="0.006" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing HabitsControllers module:"/>
+  <testcase name="checkinApiUrl have to be &quot;api/checkins&quot;" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing checkinService:"/>
+  <testcase name="have to send correct query" time="0.004" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing checkinService:"/>
+  <testcase name="apiUrl have to be &quot;api/habits&quot;" time="0.001" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
+  <testcase name="have to be sent get request on apiUrl" time="0.003" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
+  <testcase name="have to be sent delete request" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
+  <testcase name="have to create object with empty Name property" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
+  <testcase name="saving property until get respond have to be true" time="0.006" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
+  <testcase name="saving property after get success responce have to be false" time="0.004" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
   <testcase name="if responce failure then saving property until have to be true" time="0.002" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
-  <testcase name="have to be sent post request" time="0.005" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
+  <testcase name="have to be sent post request" time="0.002" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Testing habitService:"/>
   <testcase name="application name is getHabitsApp" time="0.002" classname="Chrome_45_0_2454_(Windows_8_1_0_0_0).unit3.Tests getHabitsApp module"/>
   <system-out>
     <![CDATA[

@@ -19,11 +19,11 @@
     angular.module("getHabitsApp.HabitsControllers", []).controller("HabitsListController", HabitsListController);
     HabitsListController.$inject = [ "$scope", "habitService", "checkinService" ];
     function HabitsListController($scope, habitService, checkinsService) {
-        $scope.creatingHabit = false;
         $scope.editable = false;
         $scope.amountCheckins = 12;
         $scope.arrayHead = new Array($scope.amountCheckins);
-        $scope.habits = habitService.list();
+        $scope.habits = habitService.list($scope.amountCheckins);
+        $scope.editingHabit = false;
         $scope.submitHabit = submitHabit;
         $scope.addNewHabit = addNewHabit;
         $scope.editHabit = editHabit;
@@ -35,24 +35,22 @@
         activate();
         function activate() {}
         function addNewHabit() {
-            var newHabit = habitService.createHabitButNotSave();
+            var newHabit = habitService.createHabitButNotSave($scope.amountCheckins);
             newHabit.newName = newHabit.Name;
             newHabit.editable = true;
-            $scope.creatingHabit = true;
             $scope.habits.push(newHabit);
+            $scope.editingHabit = true;
         }
         function submitHabit(habit) {
             habit.Name = habit.newName;
             habit.editable = false;
-            habit.saveSuccessEvent = saveSuccess;
-            habitService.saveHabit(habit);
-        }
-        function saveSuccess() {
-            $scope.creatingHabit = false;
+            $scope.editingHabit = false;
+            habitService.saveHabit(habit, $scope.amountCheckins);
         }
         function editHabit(habit) {
             habit.newName = habit.Name;
             habit.editable = true;
+            $scope.editingHabit = true;
         }
         function delHabit(habit, habitIndex) {
             habitService.remove(habit);
@@ -60,7 +58,7 @@
         }
         function cancelEdit(habit, habitIndex) {
             habit.editable = false;
-            $scope.creatingHabit = false;
+            $scope.editingHabit = false;
             habit.newName = habit.Name;
             var id = habit.Id;
             if (id === undefined) {
@@ -117,23 +115,39 @@
     function checkinService($resource, checkinApiUrl) {
         var Checkin = $resource(checkinApiUrl, {}, {});
         return {
-            setState: setState
+            setState: setState,
+            getEmptyArrayCheckins: getEmptyArrayCheckins
         };
         function setState(habitId, date, state) {
             var checkin = Checkin.save([], {
                 HabitId: habitId,
                 Date: date,
                 State: state
-            });
+            }, setStateSuccess, setStateError);
+        }
+        function setStateSuccess(checkin) {}
+        function setStateError(headers) {
+            var hdrs = headers;
+        }
+        function getEmptyArrayCheckins(habitId, amountCheckins) {
+            var checkinArray = [];
+            for (var i = 0; i < amountCheckins; i++) {
+                var checkin = new Checkin();
+                var currentDate = new Date();
+                checkin.Date = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0, 0);
+                checkin.State = 0;
+                checkin.HabitId = habitId;
+                checkinArray[i] = checkin;
+            }
         }
     }
 })();
 
 (function() {
     "use strict";
-    angular.module("getHabitsApp.habitService", [ "ngResource" ]).constant("apiUrl", "api/habits").factory("habitService", habitService);
-    habitService.$inject = [ "$resource", "apiUrl" ];
-    function habitService($resource, apiUrl) {
+    angular.module("getHabitsApp.habitService", [ "ngResource", "getHabitsApp.checkinService" ]).constant("apiUrl", "api/habits").factory("habitService", habitService);
+    habitService.$inject = [ "$resource", "apiUrl", "checkinService" ];
+    function habitService($resource, apiUrl, checkinService) {
         var Resource = $resource(apiUrl + "/:habitId", {
             habitId: "@Id"
         }, {});
@@ -143,24 +157,28 @@
             saveHabit: saveHabit,
             createHabitButNotSave: createHabitButNotSave
         };
-        function list() {
-            return Resource.query();
+        function list(amountCheckins) {
+            return Resource.query({
+                checkinLastDaysAmount: amountCheckins
+            });
         }
         function remove(habit) {
             habit.$remove();
         }
-        function createHabitButNotSave() {
+        function createHabitButNotSave(amountCheckins) {
             var newHabit = new Resource({});
             newHabit.Name = "";
+            newHabit.Checkins = checkinService.getEmptyArrayCheckins(amountCheckins);
             return newHabit;
         }
-        function saveHabit(habit) {
+        function saveHabit(habit, amountCheckins) {
             habit.saving = true;
-            habit.$save({}, saveHabitSuccess, saveHabitError);
+            habit.$save({
+                checkinLastDaysAmount: amountCheckins
+            }, saveHabitSuccess, saveHabitError);
         }
         function saveHabitSuccess(habit) {
             habit.saving = false;
-            habit.saveSuccessEvent();
         }
         function saveHabitError(headers) {
             var hdrs = headers;

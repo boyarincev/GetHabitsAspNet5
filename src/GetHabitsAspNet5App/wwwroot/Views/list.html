@@ -12,8 +12,8 @@
                     <span ng-hide="habit.editable">
                         <span class="habit-name">{{habit.Name}}</span>
                         <span class="control-buttons btn-group" role="group" aria-label="habit manage" ng-init="rowActive = false" ng-show="rowActive">
-                            <button ng-click="editHabit(habit)" ng-disabled="habit.saving" class="btn btn-default btn-xs edit-button">edit</button>
-                            <button ng-click="delHabit(habit, $index)" ng-disabled="habit.saving" class="btn btn-danger btn-xs delete-button">delete</button>
+                            <button ng-click="editHabit(habit)" ng-disabled="habit.saving || editingHabit" class="btn btn-default btn-xs edit-button">edit</button>
+                            <button ng-click="delHabit(habit, $index)" ng-disabled="habit.saving || editingHabit" class="btn btn-danger btn-xs delete-button">delete</button>
                         </span>
                     </span>
                     <form novalidate ng-show="habit.editable" ng-submit="submitHabit(habit)" class="form-inline input-group">
@@ -38,7 +38,7 @@
     </table>
     <form novalidate>
         <div class="form-group">
-            <button ng-click="addNewHabit()" class="btn btn-primary" id="add-new-habit-button" ng-disabled="creatingHabit">Добавить новую привычку</button>
+            <button ng-click="addNewHabit()" class="btn btn-primary" id="add-new-habit-button" ng-disabled="editingHabit">Добавить новую привычку</button>
         </div>
     </form>
 </div>

@@ -1,7 +1,11 @@
-﻿        <!DOCTYPE html>
+﻿@using Microsoft.Framework.Configuration;
+
+<!DOCTYPE html>
 <html ng-app="getHabitsApp">
 <head>
     <base href="/app">
+    <meta name="environment" content="@ViewBag.Environment" />
+    <meta name="connection-string" content="@ViewBag.ConnectionString" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Get Habits Application</title>
@@ -24,5 +28,11 @@
     <div class="container">
         <ng-view></ng-view>
     </div>
+    @*<div>
+        @foreach (var item in ViewBag.Configuration)
+        {
+            <div>@item.Key</div>
+        }
+    </div>*@
 </body>
 </html>

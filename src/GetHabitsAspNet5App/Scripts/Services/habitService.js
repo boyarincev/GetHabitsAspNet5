@@ -2,13 +2,13 @@
     'use strict';
 
     angular
-        .module('getHabitsApp.habitService', ['ngResource'])
+        .module('getHabitsApp.habitService', ['ngResource', 'getHabitsApp.checkinService'])
         .constant('apiUrl', 'api/habits')
         .factory('habitService', habitService);
 
-    habitService.$inject = ['$resource', 'apiUrl'];
+    habitService.$inject = ['$resource', 'apiUrl', 'checkinService'];
 
-    function habitService($resource, apiUrl) {
+    function habitService($resource, apiUrl, checkinService) {
         var Resource = $resource(apiUrl + '/:habitId', { habitId: '@Id' }, {
             //query: { method: 'GET', params: {}, isArray: true}
         });
@@ -20,28 +20,28 @@
             createHabitButNotSave: createHabitButNotSave
         };
 
-        function list() {
-            return Resource.query();
+        function list(amountCheckins) {
+            return Resource.query({ checkinLastDaysAmount: amountCheckins });
         }
 
         function remove(habit) {
             habit.$remove();
         }
 
-        function createHabitButNotSave() {
+        function createHabitButNotSave(amountCheckins) {
             var newHabit = new Resource({});
             newHabit.Name = '';
+            newHabit.Checkins = checkinService.getEmptyArrayCheckins(amountCheckins);
             return newHabit;
         }
 
-        function saveHabit(habit) {
+        function saveHabit(habit, amountCheckins) {
             habit.saving = true;
-            habit.$save({}, saveHabitSuccess, saveHabitError);
+            habit.$save({ checkinLastDaysAmount: amountCheckins }, saveHabitSuccess, saveHabitError);
         }
 
         function saveHabitSuccess(habit) {
             habit.saving = false;
-            habit.saveSuccessEvent();
         }
 
         function saveHabitError(headers) {

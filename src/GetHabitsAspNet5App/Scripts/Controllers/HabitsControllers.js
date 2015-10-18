@@ -10,12 +10,11 @@
     function HabitsListController($scope, habitService, checkinsService) {
 
         //Properties
-        $scope.creatingHabit = false;
         $scope.editable = false;
         $scope.amountCheckins = 12;
         $scope.arrayHead = new Array($scope.amountCheckins);
-        $scope.habits = habitService.list();
-
+        $scope.habits = habitService.list($scope.amountCheckins);
+        $scope.editingHabit = false;
 
         //Methods
         $scope.submitHabit = submitHabit;
@@ -34,27 +33,24 @@
         }
 
         function addNewHabit() {
-            var newHabit = habitService.createHabitButNotSave();
+            var newHabit = habitService.createHabitButNotSave($scope.amountCheckins);
             newHabit.newName = newHabit.Name;
             newHabit.editable = true;
-            $scope.creatingHabit = true;
             $scope.habits.push(newHabit);
+            $scope.editingHabit = true;
         }
 
         function submitHabit(habit) {
             habit.Name = habit.newName;
             habit.editable = false;
-            habit.saveSuccessEvent = saveSuccess;
-            habitService.saveHabit(habit);
-        }
-
-        function saveSuccess() {
-            $scope.creatingHabit = false;
+            $scope.editingHabit = false;
+            habitService.saveHabit(habit, $scope.amountCheckins);
         }
 
         function editHabit(habit) {
             habit.newName = habit.Name;
             habit.editable = true;
+            $scope.editingHabit = true;
         }
 
         function delHabit(habit, habitIndex) {
@@ -64,7 +60,7 @@
 
         function cancelEdit(habit, habitIndex) {
             habit.editable = false;
-            $scope.creatingHabit = false;
+            $scope.editingHabit = false;
 
             habit.newName = habit.Name;
 

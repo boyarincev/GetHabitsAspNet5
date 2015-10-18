@@ -18,7 +18,11 @@
   },
 
   "frameworks": {
-    "dnx451": { },
+    "dnx451": {
+      "dependencies": {
+        "Microsoft.Framework.Logging.Console": "1.0.0-beta5"
+      }
+    },
     "dnxcore50": { }
   },
 

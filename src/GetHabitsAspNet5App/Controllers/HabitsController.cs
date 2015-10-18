@@ -22,7 +22,7 @@ namespace GetHabitsAspNet5App.Api
 
         // GET: api/values
         [HttpGet]
-        public IEnumerable<Habit> Get()
+        public async Task<IEnumerable<Habit>> Get(int checkinLastDaysAmount)
         {
             //return new List<Habit>()
             //{
@@ -33,27 +33,29 @@ namespace GetHabitsAspNet5App.Api
             //    new Habit() {Id = 5, Name = "Приборка дома", Checkins = new List<Checkin>() { new Checkin() { Date = new DateTime(2015, 09, 16), State = CheckinState.Done, HabitId = 5 }, new Checkin() { Date = new DateTime(2015, 09, 15), State = CheckinState.Done, HabitId = 5 }, new Checkin() { Date = new DateTime(2015, 09, 14), State = CheckinState.Done, HabitId = 5 }, new Checkin() { Date = new DateTime(2015, 09, 13), State = CheckinState.Done, HabitId = 5 } } }
             //};
 
-            return _habitService.Get();
+
+            var result = await _habitService.GetHabitsWithCheckins(DateTime.Now.Date.AddDays(-(checkinLastDaysAmount - 1)), DateTime.Now.Date);
+            return result;
         }
 
         //TODO need implement
         // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
+        //[HttpGet("{id}")]
+        //public string Get(int id)
+        //{
+        //    return "value";
+        //}
 
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Habit habit)
+        public async Task<IActionResult> Post([FromBody]Habit habit, int checkinLastDaysAmount)
         {
             Habit habitResult;
 
             if (habit.Id != 0)
                 return HttpBadRequest();
 
-            habitResult = await _habitService.Create(habit);
+            habitResult = await _habitService.CreateHabit(habit, checkinLastDaysAmount);
 
             if (habitResult == null)
                 return HttpBadRequest();
@@ -63,12 +65,12 @@ namespace GetHabitsAspNet5App.Api
 
         // PUT api/values/5
         [HttpPost("{id}")]
-        public async Task<IActionResult> Post(int id, [FromBody]Habit habit)
+        public async Task<IActionResult> Post(int id, [FromBody]Habit habit, int checkinLastDaysAmount)
         {
             if (habit.Id == 0)
                 return HttpBadRequest();
 
-            var habitResult = await _habitService.Edit(habit);
+            var habitResult = await _habitService.EditHabit(habit, checkinLastDaysAmount);
 
             if (habitResult == null)
             {
@@ -82,7 +84,7 @@ namespace GetHabitsAspNet5App.Api
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Int64 id)
         {
-            var result = await _habitService.Delete(id);
+            var result = await _habitService.DeleteHabit(id);
 
             var resultStatus = result ? new HttpStatusCodeResult(200) : HttpBadRequest();
 

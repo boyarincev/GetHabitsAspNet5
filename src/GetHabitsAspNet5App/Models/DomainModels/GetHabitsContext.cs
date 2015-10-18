@@ -9,5 +9,12 @@ namespace GetHabitsAspNet5App.Models.DomainModels
     public class GetHabitsContext: DbContext
     {
         public DbSet<Habit> Habits { get; set; }
+        public DbSet<Checkin> Checkins { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ForSqlServer().UseIdentity();
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
