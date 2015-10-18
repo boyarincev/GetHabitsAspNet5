@@ -6,8 +6,8 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>650a5a85-5956-491e-9312-5e25a27d1108</ProjectGuid>
-    <RootNamespace>GetHabitsAspNet5App.Tests</RootNamespace>
+    <ProjectGuid>d341be88-6cf2-4019-87fc-d6451df5b4cf</ProjectGuid>
+    <RootNamespace>GetHabitsASPNET5App.Tests</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">..\..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
   </PropertyGroup>
