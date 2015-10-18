@@ -60,7 +60,7 @@ module.exports = function (grunt) {
                 cmd: 'webdriver-manager update --standalone'
             },
             startWebListener: {
-                cmd: 'dnx . web'
+                cmd: 'dnx web'
             }
         },
         jshint: {

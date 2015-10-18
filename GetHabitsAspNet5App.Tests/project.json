@@ -7,8 +7,7 @@
   "licenseUrl": "",
 
   "dependencies": {
-    "xunit": "2.1.0-beta4-build3109",
-    "xunit.runner.dnx": "2.1.0-beta4-build134",
+    "xunit.runner.aspnet": "2.0.0-aspnet-rc1-15710",
     "GetHabitsAspNet5App": ""
   },
   "commands": {

@@ -10,10 +10,9 @@ using Microsoft.Framework.Configuration;
 using Microsoft.Data.Entity;
 using GetHabitsAspNet5App.Services;
 using Microsoft.Framework.Logging;
-using Microsoft.AspNet.Diagnostics.Entity;
 using Microsoft.AspNet.Hosting;
-using Microsoft.Framework.Runtime;
-using Microsoft.Data.Entity.Relational.Migrations;
+using Microsoft.Dnx.Runtime;
+using Microsoft.AspNet.Diagnostics.Entity;
 
 namespace GetHabitsAspNet5App
 {
@@ -23,25 +22,30 @@ namespace GetHabitsAspNet5App
 
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
-            var builder = new ConfigurationBuilder(appEnv.ApplicationBasePath).AddEnvironmentVariables();
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(appEnv.ApplicationBasePath)
+                .AddEnvironmentVariables();
             Configuration = builder.Build();
 
-            //Configuration.Set("Data:DefaultConnection:ConnectionString", @"Server=(localdb)\mssqllocaldb;Database=GetHabitsAspNet5;Trusted_Connection=True;");
+            //var confConnectString2 = Configuration.GetSection("Data:DefaultConnection:ConnectionString");
+            //confConnectString2.Value = @"Server=(localdb)\mssqllocaldb;Database=GetHabitsAspNet5;Trusted_Connection=True;";
 
             if (!env.IsProduction())
             {
-                Configuration.Set("Data:DefaultConnection:ConnectionString", @"Server=(localdb)\mssqllocaldb;Database=GetHabitsAspNet5;Trusted_Connection=True;");
+                var confConnectString = Configuration.GetSection("Data:DefaultConnection:ConnectionString");
+                confConnectString.Value = @"Server=(localdb)\mssqllocaldb;Database=GetHabitsAspNet5;Trusted_Connection=True;";
             }
             else
             {
-                
+
             }
         }
 
         // For more information on how to configure your application, visit http://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = Configuration.Get("Data:DefaultConnection:ConnectionString");
+            var connection = Configuration.GetSection("Data:DefaultConnection:ConnectionString").Value;
+            //var connection = Configuration.Get("Data:DefaultConnection:ConnectionString");
 
             services.AddMvc();
             services.AddEntityFramework().AddSqlServer()
@@ -52,9 +56,9 @@ namespace GetHabitsAspNet5App
         public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, GetHabitsContext context)
         {
 
-            context.Database.AsRelational().ApplyMigrations();
+            context.Database.Migrate();
 
-            app.UseErrorPage();
+            app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage(DatabaseErrorPageOptions.ShowAll);
 
             loggerFactory.AddConsole(LogLevel.Verbose);

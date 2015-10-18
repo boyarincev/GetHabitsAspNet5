@@ -14,24 +14,24 @@ namespace GetHabitsAspNet5App.Tests
     public class RoutingTests
     {
 
-        [Fact]
-        public void AppRouteTest()
-        {
-            var startup = new GetHabitsAspNet5App.Startup();
+        //[Fact]
+        //public void AppRouteTest()
+        //{
+        //    var startup = new GetHabitsAspNet5App.Startup();
 
-            var serviceCollection = new ServiceCollection();
-            //serviceCollection.AddMvc();
-            startup.ConfigureServices(serviceCollection);
+        //    var serviceCollection = new ServiceCollection();
+        //    //serviceCollection.AddMvc();
+        //    startup.ConfigureServices(serviceCollection);
 
-            var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
-            //applicationBuilder.UseMvc();
+        //    var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
+        //    //applicationBuilder.UseMvc();
 
-            startup.Configure(applicationBuilder);
+        //    startup.Configure(applicationBuilder);
 
-            var app = applicationBuilder.Build();
+        //    var app = applicationBuilder.Build();
 
-            //TODO need create httpcontext
-            //app.Invoke()
-        }
+        //    //TODO need create httpcontext
+        //    //app.Invoke()
+        //}
     }
 }

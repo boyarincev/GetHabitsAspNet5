@@ -15,8 +15,11 @@ namespace GetHabitsAspNet5App.Api
         public IActionResult Index()
         {
             //ViewBag.Configuration = Startup.Configuration.GetConfigurationSections().ToList();
-            ViewBag.Environment = Startup.Configuration.Get("ASPNET_ENV");
-            ViewBag.ConnectionString = Startup.Configuration.Get("Data:DefaultConnection:ConnectionString");
+            var confEnv = Startup.Configuration.GetSection("ASPNET_ENV");
+            ViewBag.Environment = confEnv.Value;
+
+            var confConnectString = Startup.Configuration.GetSection("Data:DefaultConnection:ConnectionString");
+            ViewBag.ConnectionString = confConnectString.Value;
             return View();
         }
     }

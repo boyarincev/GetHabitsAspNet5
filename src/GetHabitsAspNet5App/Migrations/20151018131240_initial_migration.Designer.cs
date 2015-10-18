@@ -8,9 +8,10 @@ using GetHabitsAspNet5App.Models.DomainModels;
 namespace GetHabitsAspNet5App.Migrations
 {
     [DbContext(typeof(GetHabitsContext))]
-    partial class GetHabitsContextModelSnapshot : ModelSnapshot
+    [Migration("20151018131240_initial_migration")]
+    partial class initial_migration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .Annotation("ProductVersion", "7.0.0-beta8-15964")
