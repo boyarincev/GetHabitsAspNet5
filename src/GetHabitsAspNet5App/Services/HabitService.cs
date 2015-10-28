@@ -68,7 +68,7 @@ namespace GetHabitsAspNet5App.Services
         }
 
         /// <summary>
-        /// Get Array of checkins, located in order from largest date to smallest date. 
+        /// Get Array of checkins, located in order from largest date to smallest date.
         /// If input checkin List, not contains checkin for any date, for this date create new checkin with State equal NotSet.
         /// If difference between end date and start date large than 30 days, result array will be contains only 30 checkins for largest dates
         /// </summary>
@@ -89,7 +89,7 @@ namespace GetHabitsAspNet5App.Services
 
             var sortedCheckinsFromDb = checkins.OrderByDescending(ch => ch.Date).ToArray();
             var checkinArrEnum = 0;
-            
+
             for (int i = 0; i <= dateDifferent; i++)
             {
                 if (sortedCheckinsFromDb.Length > checkinArrEnum && DateTime.Now.Date.AddDays(-i) == sortedCheckinsFromDb[checkinArrEnum].Date.Date )
@@ -193,7 +193,7 @@ namespace GetHabitsAspNet5App.Services
                 .ToListAsync();
 
             return checkins;
-        } 
+        }
 
         /// <summary>
         /// Sets checkin state. Creates checkin if it doesn't exist.

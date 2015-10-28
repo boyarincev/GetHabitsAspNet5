@@ -10,11 +10,12 @@
     "EntityFramework.SqlServer": "7.0.0-beta8",
     "Microsoft.Framework.Logging.Console": "1.0.0-beta8",
     "Microsoft.AspNet.Diagnostics.Entity": "7.0.0-beta8",
-    "Microsoft.Framework.Configuration.EnvironmentVariables": "1.0.0-beta8-15638",
-    "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-beta8-15638"
+    "Microsoft.Framework.Configuration.EnvironmentVariables": "1.0.0-beta8",
+    "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-beta8"
   },
 
   "commands": {
+    "web-debug": "Microsoft.AspNet.Hosting --ASPNET_ENV Development --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:5004",
     "web": "Microsoft.AspNet.Hosting --ASPNET_ENV Development --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:5000",
     "web-old": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5000",
     "ef": "EntityFramework.Commands"

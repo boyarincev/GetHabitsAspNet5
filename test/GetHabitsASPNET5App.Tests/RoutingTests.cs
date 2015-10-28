@@ -4,6 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Framework.DependencyInjection;
+using Microsoft.AspNet.Builder.Internal;
+using Microsoft.AspNet.Builder;
+using Microsoft.AspNet.Http;
+using Microsoft.AspNet.Http.Internal;
 
 namespace GetHabitsASPNET5App.Tests
 {
@@ -12,29 +16,26 @@ namespace GetHabitsASPNET5App.Tests
     public class RoutingTests
     {
         [Fact]
-        public void Test1()
+        public void AppRouteTest()
         {
-            Assert.True(true);
+            //var startup = new GetHabitsAspNet5App.Startup();
+
+            //var serviceCollection = new ServiceCollection();
+            //serviceCollection.AddMvc();
+            //var serviceProvider = serviceCollection.BuildServiceProvider();
+            //startup.ConfigureServices(serviceCollection);
+
+            //var applicationBuilder = new ApplicationBuilder(serviceProvider);
+
+            //applicationBuilder.UseMvc();
+
+            //startup.Configure(applicationBuilder);
+
+            //var app = applicationBuilder.Build();
+
+            //TODO need create httpcontext
+            //var context = new DefaultHttpContext();
+            //app.Invoke(context);
         }
-
-        //[Fact]
-        //public void AppRouteTest()
-        //{
-        //    var startup = new GetHabitsAspNet5App.Startup();
-
-        //    var serviceCollection = new ServiceCollection();
-        //    //serviceCollection.AddMvc();
-        //    startup.ConfigureServices(serviceCollection);
-
-        //    var applicationBuilder = new ApplicationBuilder(serviceCollection.BuildServiceProvider());
-        //    //applicationBuilder.UseMvc();
-
-        //    startup.Configure(applicationBuilder);
-
-        //    var app = applicationBuilder.Build();
-
-        //    //TODO need create httpcontext
-        //    //app.Invoke()
-        //}
     }
 }
