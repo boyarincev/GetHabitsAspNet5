@@ -3,6 +3,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
+    "Microsoft.AspNet.IISPlatformHandler": "1.0.0-beta8",
     "Microsoft.AspNet.Server.Kestrel": "1.0.0-beta8",
     "Microsoft.AspNet.Mvc": "6.0.0-beta8",
     "Microsoft.AspNet.StaticFiles": "1.0.0-beta8",
@@ -11,7 +12,11 @@
     "Microsoft.Framework.Logging.Console": "1.0.0-beta8",
     "Microsoft.AspNet.Diagnostics.Entity": "7.0.0-beta8",
     "Microsoft.Framework.Configuration.EnvironmentVariables": "1.0.0-beta8",
-    "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-beta8"
+    "Microsoft.Framework.Configuration.FileExtensions": "1.0.0-beta8",
+    "Microsoft.AspNet.Identity.EntityFramework": "3.0.0-beta8",
+    "Microsoft.AspNet.Authentication.Google": "1.0.0-beta8",
+    "Microsoft.Framework.SecretManager": "1.0.0-beta8",
+    "Microsoft.Framework.Logging.TraceSource": "1.0.0-beta8"
   },
 
   "commands": {
@@ -44,5 +49,6 @@
   ],
   "scripts": {
     "prebuild": "echo before building"
-  }
+  },
+  "userSecretsId": "get-habits"
 }
