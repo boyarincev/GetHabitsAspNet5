@@ -21,7 +21,7 @@
 
   "commands": {
     "web-debug": "Microsoft.AspNet.Hosting --ASPNET_ENV Development --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:5004",
-    "web": "Microsoft.AspNet.Hosting --ASPNET_ENV Development --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:5000",
+    "web": "Microsoft.AspNet.Server.Kestrel",
     "web-old": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5000",
     "ef": "EntityFramework.Commands"
   },
