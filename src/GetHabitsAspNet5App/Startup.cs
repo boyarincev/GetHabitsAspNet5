@@ -49,11 +49,11 @@ namespace GetHabitsAspNet5App
             //Setting up configuration
             if (!env.IsProduction())
             {
-                //var confConnectString = Configuration.GetSection("Data:DefaultConnection:ConnectionString");
-                //confConnectString.Value = @"Server=(localdb)\mssqllocaldb;Database=GetHabitsAspNet5;Trusted_Connection=True;";
+                var confConnectString = Configuration.GetSection("Data:DefaultConnection:ConnectionString");
+                confConnectString.Value = @"Server=(localdb)\mssqllocaldb;Database=GetHabitsAspNet5;Trusted_Connection=True;";
 
-                //var identityConnection = Configuration.GetSection("Data:IdentityConnection:ConnectionString");
-                //identityConnection.Value = @"Server=(localdb)\mssqllocaldb;Database=GetHabitsIdentity;Trusted_Connection=True;";
+                var identityConnection = Configuration.GetSection("Data:IdentityConnection:ConnectionString");
+                identityConnection.Value = @"Server=(localdb)\mssqllocaldb;Database=GetHabitsIdentity;Trusted_Connection=True;";
             }
             else
             {
@@ -143,7 +143,11 @@ namespace GetHabitsAspNet5App
 
             var user = await identityContext.Users
                 .Where(u => u.UserName == userId && u.ProviderName == providerName)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
+
+            //TODO add claim with user Id
+            //ticketContext.Identity.AddClaim(new System.Security.Claims.Claim("UserId", userId));
 
             if (user != null)
             {

@@ -9,7 +9,7 @@ namespace GetHabitsAspNet5App.Models.DomainModels
 {
     public class GetHabitsContext: DbContext
     {
-        public GetHabitsContext(DbContextOptions options)
+        public GetHabitsContext(DbContextOptions<GetHabitsContext> options)
             :base(options)
         {
 
