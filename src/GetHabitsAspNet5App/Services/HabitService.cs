@@ -28,7 +28,7 @@ namespace GetHabitsAspNet5App.Services
         /// <returns>querying Habit collection</returns>
         public async Task<IEnumerable<Habit>> GetHabits()
         {
-            return await _dbContext.Habits.ToListAsync();
+            return await _dbContext.Habits.AsNoTracking().ToListAsync();
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace GetHabitsAspNet5App.Services
                 .GroupJoin(_dbContext.Checkins.Where(ch => ch.Date >= checkinStartDate && ch.Date <= checkinEndDate),
                     habit => habit.Id,
                     checkin => checkin.HabitId,
-                    (habit, checkins) => new { Habit = habit, Checkins = checkins }).ToListAsync();
+                    (habit, checkins) => new { Habit = habit, Checkins = checkins }).AsNoTracking().ToListAsync();
 
             var resultHabitList = new List<Habit>();
 
@@ -118,7 +118,6 @@ namespace GetHabitsAspNet5App.Services
                 return null;
 
             var clearHabit = new Habit(habit.Name);
-
             _dbContext.Habits.Add(clearHabit);
             await _dbContext.SaveChangesAsync();
 
@@ -144,7 +143,8 @@ namespace GetHabitsAspNet5App.Services
                 .GroupJoin(_dbContext.Checkins.Where(ch => ch.Date >= dateRange.StartDate && ch.Date <= dateRange.EndDate),
                     h => h.Id,
                     checkin => checkin.HabitId,
-                    (h, checkins) => new { Habit = h, Checkins = checkins }).FirstOrDefaultAsync(hc => hc.Habit.Id == habit.Id);
+                    (h, checkins) => new { Habit = h, Checkins = checkins })
+                        .FirstOrDefaultAsync(hc => hc.Habit.Id == habit.Id);
 
             var original = habitCheckinsList.Habit;
 
@@ -190,6 +190,7 @@ namespace GetHabitsAspNet5App.Services
 
             var checkins = await _dbContext.Checkins
                 .Where(ch => ch.HabitId == habitId && ch.Date >= startDate && ch.Date <= endDate)
+                .AsNoTracking()
                 .ToListAsync();
 
             return checkins;
@@ -207,7 +208,9 @@ namespace GetHabitsAspNet5App.Services
             if (!habitExists)
                 return null;
 
-            var dbCheckin = _dbContext.Checkins.Where(ch => ch.HabitId == checkin.HabitId && ch.Date.Date == checkin.Date.Date).FirstOrDefault();
+            var dbCheckin = _dbContext.Checkins
+                .Where(ch => ch.HabitId == checkin.HabitId && ch.Date.Date == checkin.Date.Date)
+                .FirstOrDefault();
 
             if (dbCheckin != null)
             {
