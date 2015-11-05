@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Http.Authentication;
 using Microsoft.AspNet.Authentication.Cookies;
+using Microsoft.AspNet.Identity;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -27,7 +28,7 @@ namespace GetHabitsAspNet5App.Controllers
 
         public async Task LogOut()
         {
-            await HttpContext.Authentication.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.Authentication.SignOutAsync(new IdentityOptions().Cookies.ExternalCookieAuthenticationScheme);
         }
     }
 }
