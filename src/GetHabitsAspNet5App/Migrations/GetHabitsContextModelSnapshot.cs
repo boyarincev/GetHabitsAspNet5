@@ -38,6 +38,8 @@ namespace GetHabitsAspNet5App.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("Id");
                 });
 

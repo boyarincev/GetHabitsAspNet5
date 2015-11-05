@@ -5,7 +5,7 @@ using Microsoft.Data.Entity.Metadata;
 
 namespace GetHabitsAspNet5App.Migrations
 {
-    public partial class initial_migration : Migration
+    public partial class get_habits_context_initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,8 @@ namespace GetHabitsAspNet5App.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: false)
+                    Name = table.Column<string>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

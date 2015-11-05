@@ -5,7 +5,7 @@ using Microsoft.Data.Entity.Metadata;
 
 namespace GetHabitsAspNet5App.Migrations
 {
-    public partial class identity_initial_migration : Migration
+    public partial class get_habits_identity_initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

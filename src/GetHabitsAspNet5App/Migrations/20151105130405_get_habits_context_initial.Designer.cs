@@ -8,8 +8,8 @@ using GetHabitsAspNet5App.Models.DomainModels;
 namespace GetHabitsAspNet5App.Migrations
 {
     [DbContext(typeof(GetHabitsContext))]
-    [Migration("20151018131240_initial_migration")]
-    partial class initial_migration
+    [Migration("20151105130405_get_habits_context_initial")]
+    partial class get_habits_context_initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,6 +38,8 @@ namespace GetHabitsAspNet5App.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired();
+
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
                 });

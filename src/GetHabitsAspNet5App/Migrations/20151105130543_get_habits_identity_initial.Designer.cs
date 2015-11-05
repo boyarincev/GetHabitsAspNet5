@@ -8,8 +8,8 @@ using GetHabitsAspNet5App.Models.Identity;
 namespace GetHabitsAspNet5App.Migrations
 {
     [DbContext(typeof(GetHabitsIdentity))]
-    [Migration("20151030185452_identity_initial_migration")]
-    partial class identity_initial_migration
+    [Migration("20151105130543_get_habits_identity_initial")]
+    partial class get_habits_identity_initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
