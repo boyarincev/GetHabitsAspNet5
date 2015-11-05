@@ -16,7 +16,7 @@ namespace GetHabitsASPNET5App.Tests
 
         public HabitServiceTests()
         {
-            var optionsBuilder = new DbContextOptionsBuilder();
+            var optionsBuilder = new DbContextOptionsBuilder<GetHabitsContext>();
             optionsBuilder.UseInMemoryDatabase();
 
             _dbContext = new GetHabitsContext(optionsBuilder.Options);
