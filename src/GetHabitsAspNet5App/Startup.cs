@@ -24,6 +24,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using GetHabitsAspNet5App.Helpers;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Server.Kestrel;
 
 namespace GetHabitsAspNet5App
 {
@@ -78,7 +79,6 @@ namespace GetHabitsAspNet5App
 
             services.AddScoped<HabitService>();
 
-            //not need yet
             services.AddIdentity<GetHabitsUser, IdentityRole>(setup =>
             {
 
@@ -87,11 +87,18 @@ namespace GetHabitsAspNet5App
         }
 
         //TODO split to prod and develop parts
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, GetHabitsContext context, GetHabitsIdentity identContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, GetHabitsContext context, GetHabitsIdentity identContext)
         {
-            loggerFactory.AddConsole(LogLevel.Verbose);
-            app.UseDeveloperExceptionPage();
-            app.UseDatabaseErrorPage(DatabaseErrorPageOptions.ShowAll);
+            if (env.IsProduction())
+            {
+                loggerFactory.AddConsole(LogLevel.Verbose);
+            }
+            else
+            {
+                loggerFactory.AddConsole(LogLevel.Verbose);
+                app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage(DatabaseErrorPageOptions.ShowAll);
+            }
 
             //TODO do checks
             context.Database.Migrate();
@@ -102,9 +109,7 @@ namespace GetHabitsAspNet5App
                 options.AutomaticAuthentication = true;
                 options.LoginPath = new PathString("/auth");
                 options.AuthenticationScheme = new IdentityCookieOptions().ExternalCookieAuthenticationScheme;
-            }
-            );
-
+            });
 
             var clientId = Configuration.GetSection("Authentication:Google:ClientId").Value;
             var clientSecret = Configuration.GetSection("Authentication:Google:ClientSecret").Value;
@@ -118,11 +123,11 @@ namespace GetHabitsAspNet5App
                 {
                     OnCreatingTicket = async ticketContext =>
                     {
-                        await CheckExistOrCreateUser(app, ticketContext);
+                        await CheckExistOrCreateUser(ticketContext);
                     }
                 };
             });
-
+            
             app.UseIISPlatformHandler();
             app.UseStaticFiles();
 
@@ -133,10 +138,10 @@ namespace GetHabitsAspNet5App
             });
         }
 
-        private async Task CheckExistOrCreateUser(IApplicationBuilder app, OAuthCreatingTicketContext ticketContext)
+        private async Task CheckExistOrCreateUser(OAuthCreatingTicketContext ticketContext)
         {
-            var identityContext = app.ApplicationServices.GetService<GetHabitsIdentity>();
-            var userManager = app.ApplicationServices.GetRequiredService<UserManager<GetHabitsUser>>();
+            var identityContext = ticketContext.HttpContext.RequestServices.GetRequiredService<GetHabitsIdentity>();
+            var userManager = ticketContext.HttpContext.RequestServices.GetRequiredService<UserManager<GetHabitsUser>>();
 
             var userClaims = ticketContext.Identity.Claims.ToList();
 
