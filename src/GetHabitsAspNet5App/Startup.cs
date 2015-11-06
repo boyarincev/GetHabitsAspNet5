@@ -84,10 +84,13 @@ namespace GetHabitsAspNet5App
 
             })
             .AddEntityFrameworkStores<GetHabitsIdentity>();
+
+            services.AddSingleton<GoogleAuthHelper, GoogleAuthHelper>();
+            services.AddSingleton<ApplicationHelper, ApplicationHelper>();
         }
 
-        //TODO split to prod and develop parts
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, GetHabitsContext context, GetHabitsIdentity identContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            GetHabitsContext context, GetHabitsIdentity identContext, GoogleAuthHelper googleAuthHelper, ApplicationHelper appHelper)
         {
             if (env.IsProduction())
             {
@@ -123,11 +126,11 @@ namespace GetHabitsAspNet5App
                 {
                     OnCreatingTicket = async ticketContext =>
                     {
-                        await CheckExistOrCreateUser(ticketContext);
+                        await CheckExistOrCreateUser(ticketContext, googleAuthHelper, appHelper);
                     }
                 };
             });
-            
+
             app.UseIISPlatformHandler();
             app.UseStaticFiles();
 
@@ -138,18 +141,17 @@ namespace GetHabitsAspNet5App
             });
         }
 
-        private async Task CheckExistOrCreateUser(OAuthCreatingTicketContext ticketContext)
+        private async Task CheckExistOrCreateUser(OAuthCreatingTicketContext ticketContext, GoogleAuthHelper googleAuthHelper, ApplicationHelper appHelper)
         {
             var identityContext = ticketContext.HttpContext.RequestServices.GetRequiredService<GetHabitsIdentity>();
             var userManager = ticketContext.HttpContext.RequestServices.GetRequiredService<UserManager<GetHabitsUser>>();
 
             var userClaims = ticketContext.Identity.Claims.ToList();
 
-            var googleUserId = userClaims.Where(c => c.Type == GoogleAuthHelper.UserIdType).FirstOrDefault().Value;
-            var providerName = "Google";
+            var googleUserId = userClaims.Where(c => c.Type == googleAuthHelper.UserIdType).FirstOrDefault().Value;
 
             var user = await identityContext.Users
-                .Where(u => u.UserName == googleUserId && u.ProviderName == providerName)
+                .Where(u => u.UserName == googleUserId && u.ProviderName == googleAuthHelper.ProviderName)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
@@ -157,22 +159,22 @@ namespace GetHabitsAspNet5App
 
             if (user == null)
             {
-                GetHabitsUser userEntity = await CreateUser(userManager, userClaims, googleUserId, providerName);
+                GetHabitsUser userEntity = await CreateUser(userManager, userClaims, googleUserId, googleAuthHelper);
 
                 userId = userEntity.Id;
             }
 
-            ticketContext.Identity.AddClaim(new Claim("UserId", userId));
+            ticketContext.Identity.AddClaim(new Claim(appHelper.TypeClaimUserId, userId));
 
         }
 
-        private async Task<GetHabitsUser> CreateUser(UserManager<GetHabitsUser> userManager, List<Claim> userClaims, string googleUserId, string providerName)
+        private async Task<GetHabitsUser> CreateUser(UserManager<GetHabitsUser> userManager, List<Claim> userClaims, string googleUserId, GoogleAuthHelper googleAuthHelper)
         {
-            var email = userClaims.Where(c => c.Type == GoogleAuthHelper.EmailType).FirstOrDefault().Value;
-            var fullName = userClaims.Where(c => c.Type == GoogleAuthHelper.FullNameType).FirstOrDefault().Value;
-            var userName = userClaims.Where(c => c.Type == GoogleAuthHelper.UserIdType).FirstOrDefault().Value;
-            var name = userClaims.Where(c => c.Type == GoogleAuthHelper.NameType).FirstOrDefault().Value;
-            var surName = userClaims.Where(c => c.Type == GoogleAuthHelper.SurNameType).FirstOrDefault().Value;
+            var email = userClaims.Where(c => c.Type == googleAuthHelper.EmailType).FirstOrDefault().Value;
+            var fullName = userClaims.Where(c => c.Type == googleAuthHelper.FullNameType).FirstOrDefault().Value;
+            var userName = userClaims.Where(c => c.Type == googleAuthHelper.UserIdType).FirstOrDefault().Value;
+            var name = userClaims.Where(c => c.Type == googleAuthHelper.NameType).FirstOrDefault().Value;
+            var surName = userClaims.Where(c => c.Type == googleAuthHelper.SurNameType).FirstOrDefault().Value;
 
             var userEntity = new GetHabitsUser()
             {
@@ -181,7 +183,7 @@ namespace GetHabitsAspNet5App
                 UserName = googleUserId,
                 Name = name,
                 SurName = surName,
-                ProviderName = providerName
+                ProviderName = googleAuthHelper.ProviderName
             };
 
             await userManager.CreateAsync(userEntity);
