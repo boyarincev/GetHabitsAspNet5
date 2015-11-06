@@ -19,8 +19,8 @@ namespace GetHabitsAspNet5App.Api
             var confEnv = Startup.Configuration.GetSection("ASPNET_ENV");
             ViewBag.Environment = confEnv.Value;
 
-            var connectionEnv = Startup.Configuration.GetSection("Data:DefaultConnection:ConnectionString");
-            ViewBag.ConnectionString = connectionEnv.Value;
+            //var connectionEnv = Startup.Configuration.GetSection("Data:DefaultConnection:ConnectionString");
+            //ViewBag.ConnectionString = connectionEnv.Value;
 
             return View();
         }

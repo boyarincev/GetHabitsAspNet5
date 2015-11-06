@@ -10,16 +10,19 @@ using Microsoft.Framework.Logging;
 using Microsoft.Data.Entity.Internal;
 using Microsoft.Framework.DependencyInjection;
 using System.Collections;
+using Microsoft.AspNet.Http;
 
 namespace GetHabitsAspNet5App.Services
 {
     public class HabitService
     {
         private GetHabitsContext _dbContext;
+        private HttpContext _httpContext;
 
-        public HabitService(GetHabitsContext dbContext)
+        public HabitService(GetHabitsContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
+            _httpContext = httpContextAccessor.HttpContext;
         }
 
         /// <summary>
