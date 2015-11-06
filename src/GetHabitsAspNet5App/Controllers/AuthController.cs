@@ -21,7 +21,7 @@ namespace GetHabitsAspNet5App.Controllers
 
         public async Task<IActionResult> Login(string authScheme)
         {
-            await HttpContext.Authentication.ChallengeAsync(authScheme, new AuthenticationProperties() { RedirectUri = "/" });
+            await HttpContext.Authentication.ChallengeAsync(authScheme, new AuthenticationProperties() { RedirectUri = "/app" });
 
             return Content("signin-google");
         }
