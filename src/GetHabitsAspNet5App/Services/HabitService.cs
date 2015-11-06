@@ -11,18 +11,39 @@ using Microsoft.Data.Entity.Internal;
 using Microsoft.Framework.DependencyInjection;
 using System.Collections;
 using Microsoft.AspNet.Http;
+using GetHabitsAspNet5App.Helpers;
 
 namespace GetHabitsAspNet5App.Services
 {
+    //TODO add logging calls
+    //TODO need clear Habit from private info before send
+
     public class HabitService
     {
         private GetHabitsContext _dbContext;
         private HttpContext _httpContext;
+        private string _userId;
+        private ILogger _logger;
+        private ApplicationHelper _appHelper;
 
-        public HabitService(GetHabitsContext dbContext, IHttpContextAccessor httpContextAccessor)
+        public HabitService(GetHabitsContext dbContext, IHttpContextAccessor httpContextAccessor, ILoggerFactory loggerFactory, ApplicationHelper appHelper)
         {
             _dbContext = dbContext;
             _httpContext = httpContextAccessor.HttpContext;
+            _logger = loggerFactory.CreateLogger<HabitService>();
+            _appHelper = appHelper;
+
+            var claimUserId = _httpContext.User.FindFirst(appHelper.TypeClaimUserId);
+
+            if (claimUserId == null)
+            {
+                _logger.LogCritical("HttpContext doesn't contain UserId claim");
+                _userId = Guid.NewGuid().ToString();
+            }
+            else
+            {
+                _userId = claimUserId.Value;
+            }
         }
 
         /// <summary>
@@ -31,7 +52,7 @@ namespace GetHabitsAspNet5App.Services
         /// <returns>querying Habit collection</returns>
         public async Task<IEnumerable<Habit>> GetHabits()
         {
-            return await _dbContext.Habits.AsNoTracking().ToListAsync();
+            return await _dbContext.Habits.Where(h => h.UserId == _userId).AsNoTracking().ToListAsync();
         }
 
         /// <summary>
@@ -54,6 +75,7 @@ namespace GetHabitsAspNet5App.Services
         public async Task<IEnumerable<Habit>> GetHabitsWithCheckins(DateTime checkinStartDate, DateTime checkinEndDate)
         {
             var habitCheckinsList = await _dbContext.Habits
+                .Where(h => h.UserId == _userId)
                 .GroupJoin(_dbContext.Checkins.Where(ch => ch.Date >= checkinStartDate && ch.Date <= checkinEndDate),
                     habit => habit.Id,
                     checkin => checkin.HabitId,
@@ -85,8 +107,8 @@ namespace GetHabitsAspNet5App.Services
             var dateDifferent = (checkinEndDate.Date - checkinStartDate.Date).Days;
 
             //While restrict possible amount queryed days
-            if (dateDifferent > 30)
-                dateDifferent = 30;
+            if (dateDifferent > _appHelper.MaxCheckinCount)
+                dateDifferent = _appHelper.MaxCheckinCount;
 
             var fullCheckins = new List<Checkin>();
 
@@ -111,56 +133,58 @@ namespace GetHabitsAspNet5App.Services
         /// <summary>
         /// Create new Habit
         /// </summary>
-        /// <param name="habit">Habit for saving, Id have to be equal 0</param>
+        /// <param name="viewHabit">Habit for saving, Id have to be equal 0</param>
         /// <param name="checkinLastDaysAmount">Amount last checkins in Habit Entity</param>
         /// <returns>Habit if creating is happened and null if not</returns>
-        public async Task<Habit> CreateHabit(Habit habit, int checkinLastDaysAmount = 0)
+        public async Task<Habit> CreateHabit(Habit viewHabit, int checkinLastDaysAmount = 0)
         {
             //we create new entity if only Id equal 0
-            if (habit.Id != 0)
+            if (viewHabit.Id != 0)
                 return null;
 
-            var clearHabit = new Habit(habit.Name);
-            _dbContext.Habits.Add(clearHabit);
+            var dbHabit = new Habit(viewHabit.Name, _userId);
+            _dbContext.Habits.Add(dbHabit);
             await _dbContext.SaveChangesAsync();
 
             var dateRange = GetStartAndEndDatesForLastAmountDays(checkinLastDaysAmount);
             var checkinEmptyList = new List<Checkin>().AsEnumerable();
 
-            clearHabit.Checkins = GetFullCheckinArray(clearHabit.Id, checkinEmptyList, dateRange.StartDate, dateRange.EndDate).ToList();
+            dbHabit.Checkins = GetFullCheckinArray(dbHabit.Id, checkinEmptyList, dateRange.StartDate, dateRange.EndDate).ToList();
 
-            return clearHabit;
+            return dbHabit;
         }
 
         /// <summary>
         /// Edit Habit entity
         /// </summary>
-        /// <param name="habit">Habit with changed fields</param>
+        /// <param name="viewHabit">Habit with changed fields</param>
         /// <param name="checkinLastDaysAmount">Amount last checkins in Habit Entity</param>
         /// <returns>Changed Habit if editing is happened and null if not</returns>
-        public async Task<Habit> EditHabit(Habit habit, int checkinLastDaysAmount = 0)
+        public async Task<Habit> EditHabit(Habit viewHabit, int checkinLastDaysAmount = 0)
         {
             var dateRange = GetStartAndEndDatesForLastAmountDays(checkinLastDaysAmount);
 
+            //TODO need split to 2 query. Checkins need get as NoTracking, them may be a lot
             var habitCheckinsList = await _dbContext.Habits
+                .Where(h => h.UserId == _userId)
                 .GroupJoin(_dbContext.Checkins.Where(ch => ch.Date >= dateRange.StartDate && ch.Date <= dateRange.EndDate),
                     h => h.Id,
                     checkin => checkin.HabitId,
                     (h, checkins) => new { Habit = h, Checkins = checkins })
-                        .FirstOrDefaultAsync(hc => hc.Habit.Id == habit.Id);
+                        .FirstOrDefaultAsync(hc => hc.Habit.Id == viewHabit.Id);
 
-            var original = habitCheckinsList.Habit;
+            var dbHabit = habitCheckinsList.Habit;
 
-            if (original == null)
+            if (dbHabit == null)
                 return null;
 
-            original.Name = habit.Name;
+            dbHabit.Name = viewHabit.Name;
             await _dbContext.SaveChangesAsync();
 
-            var checkinsResult = GetFullCheckinArray(original.Id, habitCheckinsList.Checkins, dateRange.StartDate, dateRange.EndDate);
-            original.Checkins = checkinsResult.ToList();
+            var checkinsResult = GetFullCheckinArray(dbHabit.Id, habitCheckinsList.Checkins, dateRange.StartDate, dateRange.EndDate);
+            dbHabit.Checkins = checkinsResult.ToList();
 
-            return original;
+            return dbHabit;
         }
 
         /// <summary>
@@ -170,7 +194,7 @@ namespace GetHabitsAspNet5App.Services
         /// <returns></returns>
         public async Task<Boolean> DeleteHabit(Int64 Id)
         {
-            var original = await _dbContext.Habits.FirstOrDefaultAsync(h => h.Id == Id);
+            var original = await _dbContext.Habits.Where(h => h.UserId == _userId && h.Id == Id).FirstOrDefaultAsync();
 
             if (original == null)
                 return false;
@@ -191,12 +215,15 @@ namespace GetHabitsAspNet5App.Services
                 return new List<Checkin>();
             }
 
-            var checkins = await _dbContext.Checkins
-                .Where(ch => ch.HabitId == habitId && ch.Date >= startDate && ch.Date <= endDate)
+            var checkins = await _dbContext.Habits
+                .Where(h => h.UserId == _userId && habitId == h.Id)
+                .GroupJoin(_dbContext.Checkins
+                .Where(ch => ch.Date >= startDate && ch.Date <= endDate),
+                h => h.Id, checkin => checkin.HabitId, (habit, checks) => checks)
                 .AsNoTracking()
-                .ToListAsync();
+                .FirstOrDefaultAsync();
 
-            return checkins;
+            return checkins.ToList();
         }
 
         /// <summary>
@@ -211,14 +238,20 @@ namespace GetHabitsAspNet5App.Services
             if (!habitExists)
                 return null;
 
-            var dbCheckin = _dbContext.Checkins
-                .Where(ch => ch.HabitId == checkin.HabitId && ch.Date.Date == checkin.Date.Date)
-                .FirstOrDefault();
+            var checkins = await _dbContext.Habits
+                .Where(h => h.UserId == _userId && checkin.HabitId == h.Id)
+                .GroupJoin(_dbContext.Checkins
+                .Where(ch => ch.Date.Date == checkin.Date.Date),
+                h => h.Id, chk => chk.HabitId, (habit, checks) => checks)
+                .FirstOrDefaultAsync();
 
+            var dbCheckin = checkins.FirstOrDefault();
+
+            //TODO need refactoring
             if (dbCheckin != null)
             {
                 if (checkin.State != dbCheckin.State)
-                    checkin.State = dbCheckin.State;
+                    dbCheckin.State = checkin.State;
             }
             else
             {

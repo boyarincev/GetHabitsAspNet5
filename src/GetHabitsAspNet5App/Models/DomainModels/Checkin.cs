@@ -11,6 +11,7 @@ namespace GetHabitsAspNet5App.Models.DomainModels
         public Int64 Id { get; set; }
         public Int64? HabitId { get; set; }
         public CheckinState State { get; set; }
+        //TODO need Index by this property
         [Required]
         public DateTime Date { get; set; }
     }
