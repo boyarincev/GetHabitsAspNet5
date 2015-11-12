@@ -11,7 +11,7 @@ using Microsoft.AspNet.Identity;
 
 namespace GetHabitsAspNet5App.Controllers
 {
-    public class AuthController : Controller
+    public class AuthController : LocalizeController
     {
         // GET: /<controller>/
         public IActionResult Index()

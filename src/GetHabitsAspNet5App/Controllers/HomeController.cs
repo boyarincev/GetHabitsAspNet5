@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using Microsoft.Framework.Configuration;
 using Microsoft.AspNet.Authorization;
+using GetHabitsAspNet5App.Controllers;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace GetHabitsAspNet5App.Api
+namespace GetHabitsAspNet5App.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : LocalizeController
     {
         // GET: /<controller>/
         [Authorize]

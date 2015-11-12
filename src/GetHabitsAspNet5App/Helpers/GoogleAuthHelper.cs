@@ -12,6 +12,6 @@ namespace GetHabitsAspNet5App.Helpers
         public readonly string NameType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname";
         public readonly string SurNameType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname";
         public readonly string UserIdType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
-        public string ProviderName = "Google";
+        public readonly string ProviderName = "Google";
     }
 }

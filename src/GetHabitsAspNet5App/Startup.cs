@@ -25,6 +25,7 @@ using GetHabitsAspNet5App.Helpers;
 using System.Security.Claims;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Server.Kestrel;
+using Microsoft.AspNet.Routing;
 
 namespace GetHabitsAspNet5App
 {
@@ -87,6 +88,8 @@ namespace GetHabitsAspNet5App
 
             services.AddSingleton<GoogleAuthHelper, GoogleAuthHelper>();
             services.AddSingleton<ApplicationHelper, ApplicationHelper>();
+
+            services.AddLocalization();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
@@ -137,7 +140,7 @@ namespace GetHabitsAspNet5App
             app.UseMvc(routeBuilder =>
             {
                 routeBuilder.MapRoute("appRoute", "app/{*all}", new { controller = "Home", action = "Index"});
-                routeBuilder.MapRoute("clientSideRouting", "{controller=Home}/{action=Index}/{id?}");
+                routeBuilder.MapRoute("clientSideRouting", "{culture}/{controller=Home}/{action=Index}/{id?}");
             });
         }
 
