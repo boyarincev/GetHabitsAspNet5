@@ -8,8 +8,6 @@ namespace GetHabitsAspNet5App.Models.DomainModels
 {
     public class Habit
     {
-        private string _userId;
-
         public Int64 Id { get; set; }
         public string UserId { get; set; }
         [Required]

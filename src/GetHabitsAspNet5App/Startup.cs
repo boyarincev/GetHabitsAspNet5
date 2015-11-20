@@ -82,7 +82,7 @@ namespace GetHabitsAspNet5App
 
             services.AddIdentity<GetHabitsUser, IdentityRole>(setup =>
             {
-
+                
             })
             .AddEntityFrameworkStores<GetHabitsIdentity>();
 
@@ -113,8 +113,15 @@ namespace GetHabitsAspNet5App
             app.UseCookieAuthentication(options =>
             {
                 options.AutomaticAuthentication = true;
-                options.LoginPath = new PathString("/auth");
-                options.AuthenticationScheme = new IdentityCookieOptions().ExternalCookieAuthenticationScheme;
+                options.LoginPath = new PathString("/account/login");
+                options.LogoutPath = new PathString("/account/logoff");
+                options.AuthenticationScheme = appHelper.DefaultAuthScheme;
+            });
+
+            app.UseCookieAuthentication(options =>
+            {
+                options.AutomaticAuthentication = false;
+                options.AuthenticationScheme = appHelper.TempAuthScheme;
             });
 
             var clientId = Configuration.GetSection("Authentication:Google:ClientId").Value;
@@ -124,13 +131,16 @@ namespace GetHabitsAspNet5App
             {
                 options.ClientId = clientId;
                 options.ClientSecret = clientSecret;
+                options.AuthenticationScheme = "Google";
+                options.AutomaticAuthentication = false;
+                options.SignInScheme = appHelper.TempAuthScheme;
 
                 options.Events = new OAuthEvents()
                 {
-                    OnCreatingTicket = async ticketContext =>
-                    {
-                        await CheckExistOrCreateUser(ticketContext, googleAuthHelper, appHelper);
-                    }
+                    //OnCreatingTicket = async ticketContext =>
+                    //{
+                    //    await CheckExistOrCreateUser(ticketContext, googleAuthHelper, appHelper);
+                    //}
                 };
             });
 
@@ -140,7 +150,8 @@ namespace GetHabitsAspNet5App
             app.UseMvc(routeBuilder =>
             {
                 routeBuilder.MapRoute("appRoute", "app/{*all}", new { controller = "Home", action = "Index"});
-                routeBuilder.MapRoute("clientSideRouting", "{culture}/{controller=Home}/{action=Index}/{id?}");
+                //routeBuilder.MapRoute("clientSideRouting", "{culture}/{controller=Home}/{action=Index}/{id?}");
+                routeBuilder.MapRoute("clientSideRouting", "{controller=Home}/{action=Index}/{id?}");
             });
         }
 

@@ -17,6 +17,12 @@ namespace GetHabitsAspNet5App.Helpers
         /// </summary>
         public readonly int MaxCheckinCount = 30;
 
+        public readonly string DefaultAuthScheme = "Cookies";
+
+        public readonly string TempAuthScheme = "Temp";
+
+        public readonly string AppPath = "/app";
+
         public readonly Dictionary<string, string> CultureAndAddressCorresponding = new Dictionary<string, string>();
 
         public ApplicationHelper()

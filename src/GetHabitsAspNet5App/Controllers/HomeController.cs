@@ -6,6 +6,7 @@ using Microsoft.AspNet.Mvc;
 using Microsoft.Framework.Configuration;
 using Microsoft.AspNet.Authorization;
 using GetHabitsAspNet5App.Controllers;
+using GetHabitsAspNet5App.Helpers;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,6 +14,12 @@ namespace GetHabitsAspNet5App.Controllers
 {
     public class HomeController : LocalizeController
     {
+        public HomeController(ApplicationHelper appHelper)
+            :base(appHelper)
+        {
+
+        }
+
         // GET: /<controller>/
         [Authorize]
         public IActionResult Index()

@@ -12,7 +12,7 @@ namespace GetHabitsAspNet5App.Controllers
 {
     public abstract class LocalizeController : Controller
     {
-        ApplicationHelper _appHelper;
+        protected ApplicationHelper _appHelper;
 
         public LocalizeController(ApplicationHelper appHelper)
         {
