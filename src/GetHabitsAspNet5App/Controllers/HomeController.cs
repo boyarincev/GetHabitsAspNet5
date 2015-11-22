@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.AspNet.Authorization;
-using GetHabitsAspNet5App.Controllers;
 using GetHabitsAspNet5App.Helpers;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
