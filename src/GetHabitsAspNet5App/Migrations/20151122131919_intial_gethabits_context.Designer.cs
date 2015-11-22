@@ -8,14 +8,14 @@ using GetHabitsAspNet5App.Models.DomainModels;
 namespace GetHabitsAspNet5App.Migrations
 {
     [DbContext(typeof(GetHabitsContext))]
-    [Migration("20151105130405_get_habits_context_initial")]
-    partial class get_habits_context_initial
+    [Migration("20151122131919_intial_gethabits_context")]
+    partial class intial_gethabits_context
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .Annotation("ProductVersion", "7.0.0-beta8-15964")
-                .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GetHabitsAspNet5App.Models.DomainModels.Checkin", b =>
                 {
@@ -48,7 +48,7 @@ namespace GetHabitsAspNet5App.Migrations
                 {
                     b.HasOne("GetHabitsAspNet5App.Models.DomainModels.Habit")
                         .WithMany()
-                        .ForeignKey("HabitId");
+                        .HasForeignKey("HabitId");
                 });
         }
     }

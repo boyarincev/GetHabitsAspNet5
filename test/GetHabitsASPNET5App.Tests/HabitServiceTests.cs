@@ -23,7 +23,8 @@ namespace GetHabitsASPNET5App.Tests
 
             AddHabits();
 
-            _habitService = new HabitService(_dbContext);
+            //_habitService = new HabitService(_dbContext);
+            _habitService = null;
         }
 
         private void AddHabits()

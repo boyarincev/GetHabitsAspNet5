@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
-using Microsoft.Framework.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNet.Authorization;
 using GetHabitsAspNet5App.Controllers;
 using GetHabitsAspNet5App.Helpers;

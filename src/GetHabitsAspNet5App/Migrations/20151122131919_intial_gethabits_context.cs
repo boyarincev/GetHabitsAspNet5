@@ -5,7 +5,7 @@ using Microsoft.Data.Entity.Metadata;
 
 namespace GetHabitsAspNet5App.Migrations
 {
-    public partial class get_habits_context_initial : Migration
+    public partial class intial_gethabits_context : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,7 +39,8 @@ namespace GetHabitsAspNet5App.Migrations
                         name: "FK_Checkin_Habit_HabitId",
                         column: x => x.HabitId,
                         principalTable: "Habit",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
         }
 

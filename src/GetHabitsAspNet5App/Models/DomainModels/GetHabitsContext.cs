@@ -20,7 +20,7 @@ namespace GetHabitsAspNet5App.Models.DomainModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.UseSqlServerIdentityColumns();
+            modelBuilder.ForSqlServerUseIdentityColumns();
             base.OnModelCreating(modelBuilder);
         }
     }

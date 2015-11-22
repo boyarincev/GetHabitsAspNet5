@@ -13,8 +13,8 @@ namespace GetHabitsAspNet5App.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .Annotation("ProductVersion", "7.0.0-beta8-15964")
-                .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "7.0.0-rc1-16348")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("GetHabitsAspNet5App.Models.DomainModels.Checkin", b =>
                 {
@@ -47,7 +47,7 @@ namespace GetHabitsAspNet5App.Migrations
                 {
                     b.HasOne("GetHabitsAspNet5App.Models.DomainModels.Habit")
                         .WithMany()
-                        .ForeignKey("HabitId");
+                        .HasForeignKey("HabitId");
                 });
         }
     }

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
-using Microsoft.Framework.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using GetHabitsAspNet5App.Models.DomainModels;
-using Microsoft.Framework.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Data.Entity;
 using GetHabitsAspNet5App.Services;
-using Microsoft.Framework.Logging;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Dnx.Runtime;
 using Microsoft.AspNet.Diagnostics.Entity;
@@ -26,6 +26,7 @@ using System.Security.Claims;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Server.Kestrel;
 using Microsoft.AspNet.Routing;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace GetHabitsAspNet5App
 {
@@ -82,7 +83,7 @@ namespace GetHabitsAspNet5App
 
             services.AddIdentity<GetHabitsUser, IdentityRole>(setup =>
             {
-                
+
             })
             .AddEntityFrameworkStores<GetHabitsIdentity>();
 
@@ -103,7 +104,7 @@ namespace GetHabitsAspNet5App
             {
                 loggerFactory.AddConsole(LogLevel.Verbose);
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage(DatabaseErrorPageOptions.ShowAll);
+                app.UseDatabaseErrorPage(opt => opt.EnableAll());
             }
 
             //TODO do checks
@@ -112,7 +113,8 @@ namespace GetHabitsAspNet5App
 
             app.UseCookieAuthentication(options =>
             {
-                options.AutomaticAuthentication = true;
+                options.AutomaticAuthenticate = true;
+                options.AutomaticChallenge = true;
                 options.LoginPath = new PathString("/account/login");
                 options.LogoutPath = new PathString("/account/logoff");
                 options.AuthenticationScheme = appHelper.DefaultAuthScheme;
@@ -120,7 +122,7 @@ namespace GetHabitsAspNet5App
 
             app.UseCookieAuthentication(options =>
             {
-                options.AutomaticAuthentication = false;
+                options.AutomaticAuthenticate = false;
                 options.AuthenticationScheme = appHelper.TempAuthScheme;
             });
 
@@ -132,7 +134,7 @@ namespace GetHabitsAspNet5App
                 options.ClientId = clientId;
                 options.ClientSecret = clientSecret;
                 options.AuthenticationScheme = "Google";
-                options.AutomaticAuthentication = false;
+                options.AutomaticAuthenticate = false;
                 options.SignInScheme = appHelper.TempAuthScheme;
 
                 options.Events = new OAuthEvents()

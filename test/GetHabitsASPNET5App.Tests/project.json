@@ -8,19 +8,19 @@
 
   "dependencies": {
     "xunit": "2.1.0",
-    "xunit.runner.dnx": "2.1.0-beta6-build191",
+    "xunit.runner.dnx": "2.1.0-rc1-build204",
     "GetHabitsAspNet5App": "",
-    "EntityFramework.InMemory": "7.0.0-beta8"
+    "EntityFramework.InMemory": "7.0.0-rc1-final"
   },
   "commands": {
     "test": "xunit.runner.dnx"
   },
 
-  "frameworks" : {
+  "frameworks": {
     "dnx451": {
 
     },
-    "dnxcore50" : {
+    "dnxcore50": {
       "dependencies": {
         "System.Collections": "4.0.11-beta-23225",
         "System.Linq": "4.0.1-beta-23225",

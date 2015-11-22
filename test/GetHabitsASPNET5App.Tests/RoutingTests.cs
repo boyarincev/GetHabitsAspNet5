@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using Microsoft.Framework.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNet.Builder.Internal;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
