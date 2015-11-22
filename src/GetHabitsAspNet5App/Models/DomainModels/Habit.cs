@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace GetHabitsAspNet5App.Models.DomainModels
 {
     public class Habit
     {
-        private string _userId;
-
         public Int64 Id { get; set; }
+        [JsonIgnoreAttribute]
         public string UserId { get; set; }
         [Required]
         public string Name { get; set; }
