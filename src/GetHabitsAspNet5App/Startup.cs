@@ -122,7 +122,7 @@ namespace GetHabitsAspNet5App
             {
                 options.ClientId = clientId;
                 options.ClientSecret = clientSecret;
-                options.AuthenticationScheme = "Google";
+                options.AuthenticationScheme = googleAuthHelper.ProviderName;
                 options.AutomaticAuthenticate = false;
                 options.SignInScheme = appHelper.TempAuthScheme;
 

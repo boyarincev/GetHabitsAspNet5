@@ -17,13 +17,18 @@ namespace GetHabitsAspNet5App.Controllers
 {
     public class AccountController : LocalizeController
     {
-        public AccountController(ApplicationHelper appHelper)
-            :base(appHelper)
-        {
+        private GetHabitsIdentity _identityContext;
+        private UserManager<GetHabitsUser> _userMng;
+        private GoogleAuthHelper _googleAuthHelper;
 
+        public AccountController(ApplicationHelper appHelper, GoogleAuthHelper googleAuthHelper, GetHabitsIdentity identityContext, UserManager<GetHabitsUser> userManager)
+            : base(appHelper)
+        {
+            _identityContext = identityContext;
+            _userMng = userManager;
+            _googleAuthHelper = googleAuthHelper;
         }
 
-        // GET: /<controller>/
         public IActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
@@ -35,31 +40,30 @@ namespace GetHabitsAspNet5App.Controllers
         {
             var props = new AuthenticationProperties
             {
-                RedirectUri = "/account/externalCallback"
+                RedirectUri = "/account/external" + provider + "Callback"
             };
 
             return new ChallengeResult(provider, props);
         }
 
-        public async Task<IActionResult> ExternalCallback()
+        public async Task<IActionResult> ExternalGoogleCallback()
         {
-            var externalId = await HttpContext.Authentication.AuthenticateAsync(_appHelper.TempAuthScheme);
+            var googleUserClaimsPrincipal = await HttpContext.Authentication.AuthenticateAsync(_appHelper.TempAuthScheme);
 
-            var userId = externalId.FindFirst(ClaimTypes.NameIdentifier).Value;
+            GetHabitsUser internalUser = PopulateInternalUserFromGoogleClaims(googleUserClaimsPrincipal);
 
-            var name = externalId.FindFirst(ClaimTypes.GivenName).Value;
-            var fullName = externalId.FindFirst(ClaimTypes.Name).Value;
-            var surName = externalId.FindFirst(ClaimTypes.Surname).Value;
+            if (GoogleUserExist(internalUser.AuthProviderId))
+            {
+                internalUser = await GetSavedGoogleUser(internalUser.AuthProviderId);
+            }
+            else
+            {
+                internalUser = await CreateUser(internalUser);
+            }
 
-            var email = externalId.FindFirst(ClaimTypes.Email).Value;
+            ClaimsPrincipal internalClaimsPrincipal = CreateInternalClaimsPrincipal(internalUser);
 
-            var newId = new ClaimsIdentity("application", "fullName", "role");
-            newId.AddClaim(new Claim("name", name));
-            newId.AddClaim(new Claim("surname", surName));
-            newId.AddClaim(new Claim("fullName", fullName));
-            newId.AddClaim(new Claim("email", email));
-
-            await HttpContext.Authentication.SignInAsync(_appHelper.DefaultAuthScheme, new ClaimsPrincipal(newId));
+            await HttpContext.Authentication.SignInAsync(_appHelper.DefaultAuthScheme, internalClaimsPrincipal);
             await HttpContext.Authentication.SignOutAsync(_appHelper.TempAuthScheme);
 
             return Redirect(_appHelper.AppPath);
@@ -71,54 +75,58 @@ namespace GetHabitsAspNet5App.Controllers
             Redirect("/");
         }
 
-        private async Task CheckExistOrCreateUser(GoogleAuthHelper googleAuthHelper, ApplicationHelper appHelper)
+        private ClaimsPrincipal CreateInternalClaimsPrincipal(GetHabitsUser internalUser)
         {
-            var identityContext = HttpContext.RequestServices.GetRequiredService<GetHabitsIdentity>();
-            var userManager = HttpContext.RequestServices.GetRequiredService<UserManager<GetHabitsUser>>();
+            var newClaims = new ClaimsIdentity("application", "fullName", "role");
+            newClaims.AddClaim(new Claim("name", internalUser.Name));
+            newClaims.AddClaim(new Claim("surname", internalUser.SurName));
+            newClaims.AddClaim(new Claim("fullName", internalUser.FullName));
+            newClaims.AddClaim(new Claim("email", internalUser.Email));
+            newClaims.AddClaim(new Claim("id", internalUser.Id));
 
-            var userClaims = HttpContext.User.Claims.ToList();
+            var internalClaimsPrincipal = new ClaimsPrincipal(newClaims);
+            return internalClaimsPrincipal;
+        }
 
-            var googleUserId = userClaims.Where(c => c.Type == googleAuthHelper.UserIdType).FirstOrDefault().Value;
+        private GetHabitsUser PopulateInternalUserFromGoogleClaims(ClaimsPrincipal googleUserClaims)
+        {
+            GetHabitsUser internalUser = new GetHabitsUser();
 
-            var user = await identityContext.Users
-                .Where(u => u.UserName == googleUserId && u.ProviderName == googleAuthHelper.ProviderName)
+            internalUser.AuthProviderId = googleUserClaims.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            internalUser.Name = googleUserClaims.FindFirst(ClaimTypes.GivenName).Value;
+            internalUser.FullName = googleUserClaims.FindFirst(ClaimTypes.Name).Value;
+            internalUser.SurName = googleUserClaims.FindFirst(ClaimTypes.Surname).Value;
+
+            internalUser.Email = googleUserClaims.FindFirst(ClaimTypes.Email).Value;
+
+            return internalUser;
+        }
+
+        private async Task<GetHabitsUser> CreateUser(GetHabitsUser userEntity)
+        {
+            //TODO don't save user into Db, need check saving result
+            await _userMng.CreateAsync(userEntity);
+
+            return userEntity;
+        }
+
+        private async Task<GetHabitsUser> GetSavedGoogleUser(string googleUserId)
+        {
+            var user = await _identityContext.Users
+                .Where(u => u.AuthProviderId == googleUserId && u.FromAuthProvider == _googleAuthHelper.ProviderName)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
-            string userId = user == null ? null : user.Id;
-
-            if (user == null)
-            {
-                GetHabitsUser userEntity = await CreateUser(userManager, userClaims, googleUserId, googleAuthHelper);
-
-                userId = userEntity.Id;
-            }
-
-            //HttpContext.User.Claims.Add(new Claim(appHelper.TypeClaimUserId, userId));
-
+            return user;
         }
 
-        private async Task<GetHabitsUser> CreateUser(UserManager<GetHabitsUser> userManager, List<Claim> userClaims, string googleUserId, GoogleAuthHelper googleAuthHelper)
+        private bool GoogleUserExist(string googleUserId)
         {
-            var email = userClaims.Where(c => c.Type == googleAuthHelper.EmailType).FirstOrDefault().Value;
-            var fullName = userClaims.Where(c => c.Type == googleAuthHelper.FullNameType).FirstOrDefault().Value;
-            var userName = userClaims.Where(c => c.Type == googleAuthHelper.UserIdType).FirstOrDefault().Value;
-            var name = userClaims.Where(c => c.Type == googleAuthHelper.NameType).FirstOrDefault().Value;
-            var surName = userClaims.Where(c => c.Type == googleAuthHelper.SurNameType).FirstOrDefault().Value;
+            var isExist = _identityContext.Users
+                .Any(u => u.AuthProviderId == googleUserId && u.FromAuthProvider == _googleAuthHelper.ProviderName);
 
-            var userEntity = new GetHabitsUser()
-            {
-                Email = email,
-                FullName = fullName,
-                UserName = googleUserId,
-                Name = name,
-                SurName = surName,
-                ProviderName = googleAuthHelper.ProviderName
-            };
-
-            await userManager.CreateAsync(userEntity);
-
-            return userEntity;
+            return isExist;
         }
     }
 }

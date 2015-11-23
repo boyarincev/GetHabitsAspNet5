@@ -22,6 +22,8 @@ namespace GetHabitsAspNet5App.Migrations.GetHabitsIdentityMigrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<string>("AuthProviderId");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -29,6 +31,8 @@ namespace GetHabitsAspNet5App.Migrations.GetHabitsIdentityMigrations
                         .HasAnnotation("MaxLength", 256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<string>("FromAuthProvider");
 
                     b.Property<string>("FullName");
 
@@ -49,8 +53,6 @@ namespace GetHabitsAspNet5App.Migrations.GetHabitsIdentityMigrations
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("ProviderName");
 
                     b.Property<string>("SecurityStamp");
 
