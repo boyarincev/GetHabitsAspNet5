@@ -56,10 +56,12 @@ namespace GetHabitsAspNet5App.Controllers
             return Redirect(_appHelper.AppPath);
         }
 
-        public async Task Logoff()
+        public async Task<IActionResult> Logoff()
         {
-            await HttpContext.Authentication.SignOutAsync(_appHelper.DefaultAuthScheme);
-            Redirect("/");
+            if(HttpContext.User.IsSignedIn())
+                await HttpContext.Authentication.SignOutAsync(_appHelper.DefaultAuthScheme);
+
+            return Redirect("/");
         }
 
         private async Task SigninGoogleUser()
@@ -111,7 +113,7 @@ namespace GetHabitsAspNet5App.Controllers
 
             if (!result.Succeeded)
             {
-                //if not succeeded nothing to do. it's not critical, user can authenticate whatever.
+                //if not succeeded do nothing. it's not critical, user whatever can authenticate.
             }
 
             return userEntity;

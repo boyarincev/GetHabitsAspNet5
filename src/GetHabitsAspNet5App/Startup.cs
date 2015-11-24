@@ -16,6 +16,7 @@ using GetHabitsAspNet5App.Models.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using GetHabitsAspNet5App.Helpers;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.Extensions.WebEncoders;
 
 namespace GetHabitsAspNet5App
 {
@@ -128,10 +129,13 @@ namespace GetHabitsAspNet5App
 
                 options.Events = new OAuthEvents()
                 {
-                    //OnCreatingTicket = async ticketContext =>
-                    //{
-                    //    await CheckExistOrCreateUser(ticketContext, googleAuthHelper, appHelper);
-                    //}
+                    OnRemoteError = async errorContext =>
+                    {
+                        var error = errorContext.Error;
+                        errorContext.Response.Redirect("/error?ErrorMessage=" + UrlEncoder.Default.UrlEncode(errorContext.Error.Message));
+                        errorContext.HandleResponse();
+                        await Task.FromResult(0);
+                    }
                 };
             });
 

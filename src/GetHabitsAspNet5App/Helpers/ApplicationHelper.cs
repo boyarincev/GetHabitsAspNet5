@@ -21,7 +21,7 @@ namespace GetHabitsAspNet5App.Helpers
 
         public readonly string TempAuthScheme = "Temp";
 
-        public readonly string AppPath = "/app";
+        public readonly string AppPath = "/app/";
 
         public readonly Dictionary<string, string> CultureAndAddressCorresponding = new Dictionary<string, string>();
 
