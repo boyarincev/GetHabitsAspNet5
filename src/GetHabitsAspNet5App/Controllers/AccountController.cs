@@ -10,6 +10,7 @@ using GetHabitsAspNet5App.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using GetHabitsAspNet5App.Models.Identity;
 using Microsoft.Data.Entity;
+using Microsoft.Extensions.Logging;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,13 +21,16 @@ namespace GetHabitsAspNet5App.Controllers
         private GetHabitsIdentity _identityContext;
         private UserManager<GetHabitsUser> _userMng;
         private GoogleAuthHelper _googleAuthHelper;
+        private ILogger _logger;
 
-        public AccountController(ApplicationHelper appHelper, GoogleAuthHelper googleAuthHelper, GetHabitsIdentity identityContext, UserManager<GetHabitsUser> userManager)
+        public AccountController(ApplicationHelper appHelper, GoogleAuthHelper googleAuthHelper, 
+            GetHabitsIdentity identityContext, UserManager<GetHabitsUser> userManager, ILoggerFactory loggerFactory)
             : base(appHelper)
         {
             _identityContext = identityContext;
             _userMng = userManager;
             _googleAuthHelper = googleAuthHelper;
+            _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
         public IActionResult Login(string returnUrl)
@@ -48,13 +52,23 @@ namespace GetHabitsAspNet5App.Controllers
 
         public async Task<IActionResult> ExternalGoogleCallback()
         {
-            var googleUserClaimsPrincipal = await HttpContext.Authentication.AuthenticateAsync(_appHelper.TempAuthScheme);
+            await SigninGoogleUser();
+            return Redirect(_appHelper.AppPath);
+        }
 
-            GetHabitsUser internalUser = PopulateInternalUserFromGoogleClaims(googleUserClaimsPrincipal);
+        public async Task Logoff()
+        {
+            await HttpContext.Authentication.SignOutAsync(_appHelper.DefaultAuthScheme);
+            Redirect("/");
+        }
 
-            if (GoogleUserExist(internalUser.AuthProviderId))
+        private async Task SigninGoogleUser()
+        {
+            GetHabitsUser internalUser = await GetInternalUserFromGoogleClaims();
+
+            if (isGoogleUserSaved(internalUser.ExternalId))
             {
-                internalUser = await GetSavedGoogleUser(internalUser.AuthProviderId);
+                internalUser = await GetGoogleUserFromDb(internalUser.ExternalId);
             }
             else
             {
@@ -65,14 +79,60 @@ namespace GetHabitsAspNet5App.Controllers
 
             await HttpContext.Authentication.SignInAsync(_appHelper.DefaultAuthScheme, internalClaimsPrincipal);
             await HttpContext.Authentication.SignOutAsync(_appHelper.TempAuthScheme);
-
-            return Redirect(_appHelper.AppPath);
         }
 
-        public async Task Logoff()
+        private async Task<GetHabitsUser> GetInternalUserFromGoogleClaims()
         {
-            await HttpContext.Authentication.SignOutAsync(_appHelper.DefaultAuthScheme);
-            Redirect("/");
+            var googleUserClaimsPrincipal = await HttpContext.Authentication.AuthenticateAsync(_appHelper.TempAuthScheme);
+            GetHabitsUser internalUser = PopulateInternalUserFromGoogleClaims(googleUserClaimsPrincipal);
+
+            return internalUser;
+        }
+
+        private GetHabitsUser PopulateInternalUserFromGoogleClaims(ClaimsPrincipal googleUserClaims)
+        {
+            GetHabitsUser internalUser = new GetHabitsUser();
+
+            internalUser.ExternalId = googleUserClaims.FindFirst(ClaimTypes.NameIdentifier).Value;
+            internalUser.UserName = internalUser.ExternalId;
+
+            internalUser.Name = googleUserClaims.FindFirst(ClaimTypes.GivenName).Value;
+            internalUser.FullName = googleUserClaims.FindFirst(ClaimTypes.Name).Value;
+            internalUser.SurName = googleUserClaims.FindFirst(ClaimTypes.Surname).Value;
+
+            internalUser.Email = googleUserClaims.FindFirst(ClaimTypes.Email).Value;
+
+            return internalUser;
+        }
+
+        private async Task<GetHabitsUser> CreateUser(GetHabitsUser userEntity)
+        {
+            var result = await _userMng.CreateAsync(userEntity);
+
+            if (!result.Succeeded)
+            {
+                //if not succeeded nothing to do. it's not critical, user can authenticate whatever.
+            }
+
+            return userEntity;
+        }
+
+        private async Task<GetHabitsUser> GetGoogleUserFromDb(string googleUserId)
+        {
+            var user = await _identityContext.Users
+                .Where(u => u.ExternalId == googleUserId && u.FromAuthProvider == _googleAuthHelper.ProviderName)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        private bool isGoogleUserSaved(string googleUserId)
+        {
+            var isExist = _identityContext.Users
+                .Any(u => u.ExternalId == googleUserId && u.FromAuthProvider == _googleAuthHelper.ProviderName);
+
+            return isExist;
         }
 
         private ClaimsPrincipal CreateInternalClaimsPrincipal(GetHabitsUser internalUser)
@@ -86,47 +146,6 @@ namespace GetHabitsAspNet5App.Controllers
 
             var internalClaimsPrincipal = new ClaimsPrincipal(newClaims);
             return internalClaimsPrincipal;
-        }
-
-        private GetHabitsUser PopulateInternalUserFromGoogleClaims(ClaimsPrincipal googleUserClaims)
-        {
-            GetHabitsUser internalUser = new GetHabitsUser();
-
-            internalUser.AuthProviderId = googleUserClaims.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            internalUser.Name = googleUserClaims.FindFirst(ClaimTypes.GivenName).Value;
-            internalUser.FullName = googleUserClaims.FindFirst(ClaimTypes.Name).Value;
-            internalUser.SurName = googleUserClaims.FindFirst(ClaimTypes.Surname).Value;
-
-            internalUser.Email = googleUserClaims.FindFirst(ClaimTypes.Email).Value;
-
-            return internalUser;
-        }
-
-        private async Task<GetHabitsUser> CreateUser(GetHabitsUser userEntity)
-        {
-            //TODO don't save user into Db, need check saving result
-            await _userMng.CreateAsync(userEntity);
-
-            return userEntity;
-        }
-
-        private async Task<GetHabitsUser> GetSavedGoogleUser(string googleUserId)
-        {
-            var user = await _identityContext.Users
-                .Where(u => u.AuthProviderId == googleUserId && u.FromAuthProvider == _googleAuthHelper.ProviderName)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
-
-            return user;
-        }
-
-        private bool GoogleUserExist(string googleUserId)
-        {
-            var isExist = _identityContext.Users
-                .Any(u => u.AuthProviderId == googleUserId && u.FromAuthProvider == _googleAuthHelper.ProviderName);
-
-            return isExist;
         }
     }
 }

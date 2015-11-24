@@ -8,7 +8,7 @@ using GetHabitsAspNet5App.Models.Identity;
 namespace GetHabitsAspNet5App.Migrations.GetHabitsIdentityMigrations
 {
     [DbContext(typeof(GetHabitsIdentity))]
-    [Migration("20151123123329_initial_identity_context")]
+    [Migration("20151124153914_initial_identity_context")]
     partial class initial_identity_context
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,8 +23,6 @@ namespace GetHabitsAspNet5App.Migrations.GetHabitsIdentityMigrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("AuthProviderId");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -32,6 +30,8 @@ namespace GetHabitsAspNet5App.Migrations.GetHabitsIdentityMigrations
                         .HasAnnotation("MaxLength", 256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<string>("ExternalId");
 
                     b.Property<string>("FromAuthProvider");
 

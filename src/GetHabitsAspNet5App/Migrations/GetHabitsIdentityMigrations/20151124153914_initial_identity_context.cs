@@ -15,10 +15,10 @@ namespace GetHabitsAspNet5App.Migrations.GetHabitsIdentityMigrations
                 {
                     Id = table.Column<string>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    AuthProviderId = table.Column<string>(nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     EmailConfirmed = table.Column<bool>(nullable: false),
+                    ExternalId = table.Column<string>(nullable: true),
                     FromAuthProvider = table.Column<string>(nullable: true),
                     FullName = table.Column<string>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),

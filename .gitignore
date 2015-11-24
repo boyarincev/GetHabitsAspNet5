@@ -214,3 +214,6 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+
+# Karma test results
+TESTS-Chrome_*.xml
