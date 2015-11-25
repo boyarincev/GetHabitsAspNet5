@@ -17,6 +17,10 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using GetHabitsAspNet5App.Helpers;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Extensions.WebEncoders;
+using Microsoft.AspNet.Localization;
+using Microsoft.AspNet.Routing;
+using GetHabitsAspNet5App.Infrastructure;
+using System.Globalization;
 
 namespace GetHabitsAspNet5App
 {
@@ -80,7 +84,12 @@ namespace GetHabitsAspNet5App
             services.AddSingleton<GoogleAuthHelper, GoogleAuthHelper>();
             services.AddSingleton<ApplicationHelper, ApplicationHelper>();
 
-            services.AddLocalization();
+            services.AddLocalization(lo =>
+            {
+                
+            });
+
+            services.Configure<RouteOptions>(ro => ro.AppendTrailingSlash = true);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
@@ -96,6 +105,8 @@ namespace GetHabitsAspNet5App
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage(opt => opt.EnableAll());
             }
+
+            app.UseStaticFiles();
 
             //TODO do checks
             context.Database.Migrate();
@@ -139,8 +150,25 @@ namespace GetHabitsAspNet5App
                 };
             });
 
+            var localizationOptions = new RequestLocalizationOptions()
+            {
+                SupportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("ru-RU")
+                },
+                SupportedUICultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("ru-RU")
+                }
+            };
+
+            localizationOptions.RequestCultureProviders.Insert(0, new SubFolderRequestCultureProvider(appHelper));
+
+            app.UseRequestLocalization(localizationOptions, new RequestCulture("ru-RU"));
+
             app.UseIISPlatformHandler();
-            app.UseStaticFiles();
 
             app.UseMvc(routeBuilder =>
             {

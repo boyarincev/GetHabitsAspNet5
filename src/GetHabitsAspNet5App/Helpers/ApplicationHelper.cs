@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,12 +24,12 @@ namespace GetHabitsAspNet5App.Helpers
 
         public readonly string AppPath = "/app/";
 
-        public readonly Dictionary<string, string> CultureAndAddressCorresponding = new Dictionary<string, string>();
+        public readonly Dictionary<string, CultureInfo> AddressAndCultureCorresponding = new Dictionary<string, CultureInfo>();
 
         public ApplicationHelper()
         {
-            CultureAndAddressCorresponding.Add("ru-RU", "ru");
-            CultureAndAddressCorresponding.Add("en", "en");
+            AddressAndCultureCorresponding.Add("ru", new CultureInfo("ru-RU"));
+            AddressAndCultureCorresponding.Add("en", new CultureInfo("en-US"));
         }
     }
 }
