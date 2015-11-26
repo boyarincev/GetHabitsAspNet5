@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Localization;
 using Microsoft.AspNet.Http.Features;
+using Microsoft.AspNet.Authorization;
 
 // For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,7 +13,7 @@ namespace GetHabitsAspNet5App.Controllers
 {
     public class AppController : Controller
     {
-        // GET: /<controller>/
+        [Authorize]
         public IActionResult Index()
         {
             //var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();

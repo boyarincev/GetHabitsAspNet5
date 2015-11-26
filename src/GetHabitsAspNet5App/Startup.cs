@@ -89,7 +89,12 @@ namespace GetHabitsAspNet5App
                 
             });
 
-            services.Configure<RouteOptions>(ro => ro.AppendTrailingSlash = true);
+            services.Configure<RouteOptions>(ro => 
+            {
+                ro.AppendTrailingSlash = true;
+                ro.LowercaseUrls = true;
+                ro.ConstraintMap.Add("langName", typeof(LangNameRouteConstraint));
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
@@ -173,8 +178,7 @@ namespace GetHabitsAspNet5App
             app.UseMvc(routeBuilder =>
             {
                 routeBuilder.MapRoute("appRoute", "app/{*all}", new { controller = "App", action = "Index"});
-                //routeBuilder.MapRoute("clientSideRouting", "{culture}/{controller=Home}/{action=Index}/{id?}");
-                routeBuilder.MapRoute("clientSideRouting", "{controller=Home}/{action=Index}/{id?}");
+                routeBuilder.MapRoute("clientSideRouting", "{langname}/{controller=Home}/{action=Index}/{id?}", null, new { langname = new LangNameRouteConstraint(appHelper.LangNameAndCultureNameCorresponding.Keys) });
             });
         }
     }

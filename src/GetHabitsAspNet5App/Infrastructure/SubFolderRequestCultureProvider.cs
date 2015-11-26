@@ -42,7 +42,7 @@ namespace GetHabitsAspNet5App.Infrastructure
 
         private List<KeyValuePair<string, CultureInfo>> GetListAvailableCulture(string firstSegmentFromPath)
         {
-            return _appHelper.AddressAndCultureCorresponding.Where(acc => firstSegmentFromPath == "/" + acc.Key + "/").ToList();
+            return _appHelper.LangNameAndCultureNameCorresponding.Where(acc => firstSegmentFromPath == "/" + acc.Key + "/").ToList();
         }
 
         private string GetPath(HttpContext httpContext)
