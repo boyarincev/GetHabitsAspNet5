@@ -67,7 +67,9 @@ namespace GetHabitsAspNet5App
             var connection = Configuration.GetSection("Data:DefaultConnection:ConnectionString").Value;
             var identityConnection = Configuration.GetSection("Data:IdentityConnection:ConnectionString").Value;
 
-            services.AddMvc();
+            services.AddMvc()
+                .AddViewLocalization(options => options.ResourcesPath = "Resources")
+                .AddDataAnnotationsLocalization(); ;
 
             services.AddEntityFramework().AddSqlServer()
                 .AddDbContext<GetHabitsContext>(options => options.UseSqlServer(connection))
@@ -84,12 +86,7 @@ namespace GetHabitsAspNet5App
             services.AddSingleton<GoogleAuthHelper, GoogleAuthHelper>();
             services.AddSingleton<ApplicationHelper, ApplicationHelper>();
 
-            services.AddLocalization(lo =>
-            {
-                
-            });
-
-            services.Configure<RouteOptions>(ro => 
+            services.Configure<RouteOptions>(ro =>
             {
                 ro.AppendTrailingSlash = true;
                 ro.LowercaseUrls = true;

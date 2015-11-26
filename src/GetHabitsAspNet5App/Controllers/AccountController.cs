@@ -23,7 +23,7 @@ namespace GetHabitsAspNet5App.Controllers
         private GoogleAuthHelper _googleAuthHelper;
         private ILogger _logger;
 
-        public AccountController(ApplicationHelper appHelper, GoogleAuthHelper googleAuthHelper, 
+        public AccountController(ApplicationHelper appHelper, GoogleAuthHelper googleAuthHelper,
             GetHabitsIdentity identityContext, UserManager<GetHabitsUser> userManager, ILoggerFactory loggerFactory)
             : base(appHelper)
         {
