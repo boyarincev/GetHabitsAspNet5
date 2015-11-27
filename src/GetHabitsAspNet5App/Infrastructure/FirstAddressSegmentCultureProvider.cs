@@ -12,11 +12,11 @@ namespace GetHabitsAspNet5App.Infrastructure
     /// <summary>
     /// Culture provider determine site culture by first segment into requested address
     /// </summary>
-    public class FirstAddressSegmentRequestCultureProvider : IRequestCultureProvider
+    public class FirstAddressSegmentCultureProvider : IRequestCultureProvider
     {
         private ApplicationHelper _appHelper;
 
-        public FirstAddressSegmentRequestCultureProvider(ApplicationHelper appHelper)
+        public FirstAddressSegmentCultureProvider(ApplicationHelper appHelper)
         {
             _appHelper = appHelper;
         }
