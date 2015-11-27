@@ -90,7 +90,7 @@ namespace GetHabitsAspNet5App
             {
                 ro.AppendTrailingSlash = true;
                 ro.LowercaseUrls = true;
-                ro.ConstraintMap.Add("langName", typeof(LangNameRouteConstraint));
+                ro.ConstraintMap.Add("langName", typeof(RequestLocalizedRouteConstraint));
             });
         }
 
@@ -174,8 +174,9 @@ namespace GetHabitsAspNet5App
 
             app.UseMvc(routeBuilder =>
             {
-                routeBuilder.MapRoute("appRoute", "app/{*all}", new { controller = "App", action = "Index"});
-                routeBuilder.MapRoute("clientSideRouting", "{langname}/{controller=Home}/{action=Index}/{id?}", null, new { langname = new LangNameRouteConstraint(appHelper.LangNameAndCultureNameCorresponding.Keys) });
+                routeBuilder.MapRoute("applicationRoute", "app/{*all}", new { controller = "App", action = "Index"});
+                routeBuilder.MapRoute("localizedRoute", "{langname}/{controller=Home}/{action=Index}/{id?}", null, new { langname = new RequestLocalizedRouteConstraint(appHelper.LangNameAndCultureNameCorresponding.Keys) });
+                routeBuilder.MapRoute("unLocalizedRoute", "{*allPath}", new { controller = "Localize", action = "UnLocalizedRequest" }, new { allPath = new RequestUnLocalizedRouteConstraint(appHelper.LangNameAndCultureNameCorresponding.Keys) });
             });
         }
     }

@@ -13,20 +13,13 @@ using Microsoft.AspNet.Localization;
 
 namespace GetHabitsAspNet5App.Controllers
 {
-    public class HomeController : LocalizeController
+    public class HomeController : Controller
     {
+        private ApplicationHelper _appHelper;
+
         public HomeController(ApplicationHelper appHelper)
-            : base(appHelper)
         {
-
-        }
-
-        [Route("/", Name = "SiteRoot")]
-        public IActionResult SiteRoot()
-        {
-            string redirectAddress = GetAddressForRedirectFromSiteRoot();
-
-            return Redirect(redirectAddress);
+            _appHelper = appHelper;
         }
 
         public IActionResult Index()
@@ -38,37 +31,6 @@ namespace GetHabitsAspNet5App.Controllers
             //ViewBag.ConnectionString = connectionEnv.Value;
 
             return View();
-        }
-
-        private string GetAddressForRedirectFromSiteRoot()
-        {
-            var requestCulture = GetRequestCulture();
-            var requestLangName = requestCulture.TwoLetterISOLanguageName;
-
-            if (SiteSupportsLangName(requestLangName))
-            {
-                return requestLangName;
-            }
-
-            return _appHelper.DefaultLangName;
-        }
-
-        private CultureInfo GetRequestCulture()
-        {
-            var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
-            var requestCulture = requestCultureFeature.RequestCulture;
-
-            return requestCulture.Culture;
-        }
-
-        private bool SiteSupportsLangName(string langName)
-        {
-            CultureInfo cultureInfo;
-            _appHelper.LangNameAndCultureNameCorresponding.
-                TryGetValue(langName, out cultureInfo);
-
-            var siteSupportsRequestLangName = cultureInfo != null;
-            return siteSupportsRequestLangName;
         }
     }
 }

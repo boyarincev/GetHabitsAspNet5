@@ -8,11 +8,14 @@ using GetHabitsAspNet5App.Helpers;
 
 namespace GetHabitsAspNet5App.Infrastructure
 {
-    public class LangNameRouteConstraint : IRouteConstraint
+    /// <summary>
+    /// Constraint checks that first segment dosen't contain localized segment
+    /// </summary>
+    public class RequestUnLocalizedRouteConstraint : IRouteConstraint
     {
         private IEnumerable<string> _allowedLangs;
 
-        public LangNameRouteConstraint(IEnumerable<string> allowedLangs)
+        public RequestUnLocalizedRouteConstraint(IEnumerable<string> allowedLangs)
         {
             _allowedLangs = allowedLangs;
         }
@@ -23,13 +26,22 @@ namespace GetHabitsAspNet5App.Infrastructure
             values.TryGetValue(routeKey, out objRouteValue);
 
             string routeValue = objRouteValue.ToString();
-
-            if (_allowedLangs.Contains(routeValue))
+            string firstSegment = GetFirstSegment(routeValue);
+            var requestContainsLocalizedSegment = _allowedLangs.Contains(firstSegment);
+            
+            if (!requestContainsLocalizedSegment)
             {
                 return true;
             }
 
             return false;
+        }
+
+        private static string GetFirstSegment(string routeValue)
+        {
+            var firstSlashIndex = routeValue.IndexOf('/');
+            string firstSegment = routeValue.Substring(0, firstSlashIndex);
+            return firstSegment;
         }
     }
 }

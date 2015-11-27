@@ -16,21 +16,22 @@ using Microsoft.Extensions.Logging;
 
 namespace GetHabitsAspNet5App.Controllers
 {
-    public class AccountController : LocalizeController
+    public class AccountController : Controller
     {
         private GetHabitsIdentity _identityContext;
         private UserManager<GetHabitsUser> _userMng;
         private GoogleAuthHelper _googleAuthHelper;
         private ILogger _logger;
+        private ApplicationHelper _appHelper;
 
         public AccountController(ApplicationHelper appHelper, GoogleAuthHelper googleAuthHelper,
             GetHabitsIdentity identityContext, UserManager<GetHabitsUser> userManager, ILoggerFactory loggerFactory)
-            : base(appHelper)
         {
             _identityContext = identityContext;
             _userMng = userManager;
             _googleAuthHelper = googleAuthHelper;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            _appHelper = appHelper;
         }
 
         public IActionResult Login(string returnUrl)
