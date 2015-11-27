@@ -166,7 +166,7 @@ namespace GetHabitsAspNet5App
                 }
             };
 
-            localizationOptions.RequestCultureProviders.Insert(0, new SubFolderRequestCultureProvider(appHelper));
+            localizationOptions.RequestCultureProviders.Insert(0, new FirstAddressSegmentRequestCultureProvider(appHelper));
 
             app.UseRequestLocalization(localizationOptions, new RequestCulture("ru-RU"));
 

@@ -9,11 +9,14 @@ using System.Globalization;
 
 namespace GetHabitsAspNet5App.Infrastructure
 {
-    public class SubFolderRequestCultureProvider : IRequestCultureProvider
+    /// <summary>
+    /// Culture provider determine site culture by first segment into requested address
+    /// </summary>
+    public class FirstAddressSegmentRequestCultureProvider : IRequestCultureProvider
     {
         private ApplicationHelper _appHelper;
 
-        public SubFolderRequestCultureProvider(ApplicationHelper appHelper)
+        public FirstAddressSegmentRequestCultureProvider(ApplicationHelper appHelper)
         {
             _appHelper = appHelper;
         }
